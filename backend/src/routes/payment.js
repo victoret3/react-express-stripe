@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 
-const paymentApi = app => {
+const paymentApi = (app) => {
   app.get('/', (req, res) => {
     res.send({
       message: 'Ping from Checkout Server',
@@ -10,39 +10,30 @@ const paymentApi = app => {
   });
 
   app.post('/payment/session-initiate', async (req, res) => {
-    const {
-      clientReferenceId,
-      customerEmail,
-      lineItem,
-      successUrl,
-      cancelUrl,
-    } = req.body;
+    const { lineItems, successUrl, cancelUrl } = req.body;
 
-    const stripe = Stripe('YOUR_STRIPE_SECRET_KEY');
+    const stripe = Stripe(process.env.STRIPE_SECRET_KEY); // Clave de Stripe desde .env
 
     let session;
 
     try {
       session = await stripe.checkout.sessions.create({
-        client_reference_id: clientReferenceId,
-        customer_email: customerEmail,
         payment_method_types: ['card'],
-        line_items: [lineItem],
-        payment_intent_data: {
-          description: `${lineItem.name} ${lineItem.description}`,
-        },
+        line_items: lineItems,
+        mode: 'payment',
         success_url: successUrl,
         cancel_url: cancelUrl,
       });
     } catch (error) {
-      res.status(500).send({ error });
+      console.error('Error creating Stripe session:', error);
+      return res.status(500).send({ error: error.message });
     }
 
     return res.status(200).send(session);
   });
 
   app.post('/payment/session-complete', async (req, res) => {
-    const stripe = Stripe('YOUR_STRIPE_SECRET_KEY');
+    const stripe = Stripe(process.env.STRIPE_SECRET_KEY); // Clave de Stripe desde .env
 
     let event;
 
@@ -50,9 +41,10 @@ const paymentApi = app => {
       event = stripe.webhooks.constructEvent(
         req.rawBody,
         req.headers['stripe-signature'],
-        'YOUR_STRIPE_WEBHOOK_SECRET'
+        process.env.STRIPE_WEBHOOK_SECRET // Se usa el webhook secret desde .env
       );
     } catch (error) {
+      console.error('Webhook Error:', error.message);
       return res.status(400).send(`Webhook Error: ${error.message}`);
     }
 
@@ -60,11 +52,11 @@ const paymentApi = app => {
       const session = event.data.object;
 
       try {
-        // complete your customer's order
-        // e.g. save the purchased product into your database
-        // take the clientReferenceId to map your customer to a product
+        console.log('Pago completado:', session);
+        // Completar lógica adicional aquí
       } catch (error) {
-        return res.status(404).send({ error, session });
+        console.error('Error procesando la orden:', error);
+        return res.status(500).send({ error, session });
       }
     }
 
