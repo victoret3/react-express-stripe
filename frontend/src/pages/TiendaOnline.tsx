@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, SimpleGrid, Image, Text, Button, Spinner } from '@chakra-ui/react';
 import axios from 'axios';
+import { useCart } from '../CartContext'; // Importar el hook del carrito
 
 // Define la interfaz del producto
 interface Product {
@@ -14,6 +15,7 @@ interface Product {
 const TiendaOnline: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { addToCart } = useCart(); // Usar la función para añadir al carrito
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -51,8 +53,20 @@ const TiendaOnline: React.FC = () => {
               {product.name}
             </Text>
             <Text>Precio: €{product.price.toFixed(2)}</Text>
-            <Button colorScheme="blue" mt={2}>
-              Comprar
+            <Button
+              colorScheme="blue"
+              mt={2}
+              onClick={() =>
+                addToCart({
+                  id: product._id,
+                  name: product.name,
+                  price: product.price,
+                  description: product.description,
+                  image: product.image,
+                })
+              }
+            >
+              Añadir al carrito
             </Button>
           </Box>
         ))}

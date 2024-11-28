@@ -10,30 +10,30 @@ const paymentApi = (app) => {
   });
 
   app.post('/payment/session-initiate', async (req, res) => {
+  
     const { lineItems, successUrl, cancelUrl } = req.body;
-
-    const stripe = Stripe(process.env.STRIPE_SECRET_KEY); // Clave de Stripe desde .env
-
-    let session;
-
+  
+    const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+  
     try {
-      session = await stripe.checkout.sessions.create({
+      const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: lineItems,
         mode: 'payment',
         success_url: successUrl,
         cancel_url: cancelUrl,
       });
+  
+      res.status(200).send(session);
     } catch (error) {
-      console.error('Error creating Stripe session:', error);
-      return res.status(500).send({ error: error.message });
+      console.error('Error creando sesión de Stripe:', error);
+      res.status(500).send({ error: error.message });
     }
-
-    return res.status(200).send(session);
-  });
-
+  });  
+  
   app.post('/payment/session-complete', async (req, res) => {
-    const stripe = Stripe(process.env.STRIPE_SECRET_KEY); // Clave de Stripe desde .env
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2020-08-27' });
+
 
     let event;
 

@@ -1,10 +1,18 @@
+import dotenv from 'dotenv';
+
+// Siempre carga las variables al inicio
+dotenv.config();
+console.log('Stripe Key:', process.env.STRIPE_SECRET_KEY);
+console.log('Frontend URL:', process.env.FRONTEND_URL);
+
 import express from 'express';
 import cors from 'cors';
+
 
 const configureServer = (app) => {
   // Middleware para habilitar CORS
   app.use(cors({
-    origin: 'http://localhost:3000', // Cambia esto según tu frontend
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Cambia esto según tu frontend
     methods: ['GET', 'POST'], // Métodos permitidos
     allowedHeaders: ['Content-Type', 'Authorization'], // Cabeceras permitidas
   }));
@@ -34,6 +42,15 @@ const configureServer = (app) => {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
   });
+
+  // Middleware para manejar errores de configuración
+  if (!process.env.STRIPE_SECRET_KEY) {
+    console.warn('⚠️  STRIPE_SECRET_KEY no está configurada en el archivo .env');
+  }
+
+  if (!process.env.FRONTEND_URL) {
+    console.warn('⚠️  FRONTEND_URL no está configurada en el archivo .env');
+  }
 };
 
 export default configureServer;

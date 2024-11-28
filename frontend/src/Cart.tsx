@@ -1,48 +1,49 @@
 import React from 'react';
+import { Box, Text, Button, SimpleGrid } from '@chakra-ui/react';
 import { useCart } from './CartContext';
-
-const CURRENCY = 'eur';
-
-const toCent = (amount: number): number => amount * 100;
+import CartSummary from './components/CartSummary'; // Usa CartSummary para manejar el flujo de pago
 
 const Cart: React.FC = () => {
   const { cart, removeFromCart, clearCart } = useCart();
 
-  // Calcular el total del carrito
-  const totalAmount = cart.reduce((sum: number, item: { price: number }) => sum + item.price, 0);
-
-  const handleCheckout = async () => {
-    const lineItems = cart.map((item: { name: string; description: string; image: string; price: number }) => ({
-      name: item.name,
-      description: item.description,
-      images: [item.image],
-      amount: toCent(item.price),
-      currency: CURRENCY,
-      quantity: 1,
-    }));
-
-    console.log('Line Items for Checkout:', lineItems);
-
-    // Aquí iría la lógica para iniciar Stripe Checkout
-  };
+  const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
 
   return (
-    <div>
-      <h1>Carrito de Compras</h1>
-      <p>Total: ${totalAmount.toFixed(2)}</p>
-      <button onClick={handleCheckout}>Checkout</button>
-      <div>
-        <ul>
-          {cart.map((item: any) => (
-            <li key={item.id}>
-              {item.name} - ${item.price}
-              <button onClick={() => removeFromCart(item.id)}>Eliminar</button>
-            </li>
-          ))}
-        </ul>
-        <button onClick={clearCart}>Vaciar carrito</button>
-      </div>
-    </div>
+    <Box p={5}>
+      <Text fontSize="2xl" mb={4}>
+        Carrito de Compras
+      </Text>
+      {cart.length === 0 ? (
+        <Text>No hay productos en el carrito.</Text>
+      ) : (
+        <>
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={5}>
+            {cart.map((item) => (
+              <Box key={item.id} borderWidth="1px" borderRadius="lg" overflow="hidden" p={4}>
+                <Text fontWeight="bold">{item.name}</Text>
+                <Text>Precio: €{item.price.toFixed(2)}</Text>
+                <Button colorScheme="red" mt={2} onClick={() => removeFromCart(item.id)}>
+                  Eliminar
+                </Button>
+              </Box>
+            ))}
+          </SimpleGrid>
+
+          {/* Total del carrito */}
+          <Box mt={4}>
+            <Text fontWeight="bold">Total: €{totalAmount.toFixed(2)}</Text>
+          </Box>
+
+          {/* Botón de pagar */}
+          <CartSummary />
+
+          {/* Botón de vaciar carrito */}
+          <Button colorScheme="red" mt={4} onClick={clearCart}>
+            Vaciar carrito
+          </Button>
+        </>
+      )}
+    </Box>
   );
 };
 
