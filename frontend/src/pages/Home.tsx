@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Image, Text, Flex } from '@chakra-ui/react';
 import portadaImage from '../assets/boronat.webp';
 import firmaImage from '../assets/firmaNani.png';
-import HamburgerMenu from '../components/HamburgerMenu';
 
 const Home: React.FC = () => {
   return (
@@ -13,6 +12,7 @@ const Home: React.FC = () => {
           src={portadaImage}
           alt="Imagen de portada"
           objectFit="cover"
+          objectPosition="15% center" // Posiciona la imagen desplazada hacia la derecha
           w="100%"
           h="100%"
         />
@@ -22,41 +22,40 @@ const Home: React.FC = () => {
           left="0"
           w="100%"
           h="100%"
-          bg="rgba(0, 0, 0, 0.5)" // Oscurece la imagen con un fondo semi-transparente
+          bg="rgba(0, 0, 0, 0.4)" 
         />
       </Box>
 
-      {/* Menú hamburguesa */}
-      <HamburgerMenu />
+   
 
       {/* Contenedor para imagen de firma y texto */}
       <Flex
         position="absolute"
         bottom="0"
         left="0"
-        pl={{ base: "1rem", md: "2rem", lg: "15rem" }} // Paddings en lugar de margins
+        pl={{ base: "1rem", md: "2rem", lg: "15rem" }} 
         pb={{ base: "20vw", md: "5rem", lg: "3rem" }}
         direction="column"
-        align={{ base: "center", lg: "flex-start" }} // Centrado en mobile
-        w="100%" // Asegura ancho completo
+        align={{ base: "center", lg: "flex-start" }} 
+        w="100%"
         color="white"
       >
         {/* Imagen de firma */}
         <Image
           src={firmaImage}
           alt="Firma"
-          width={{ base: "12rem", md: "40vw", lg: "25vw" }} // Se ajusta al tamaño de la pantalla
-          ml={{ base: "0", md: "-3rem", lg: "3rem" }} 
-          mb={{ base: "0", md: "-8rem", lg: "-10rem" }} 
-          filter="invert(1) brightness(2)" // Ajuste para parecer blanca
-          transform={{ base: "rotate(0deg)", lg: "rotate(-90deg)" }} // Rotación solo en pantallas grandes
+          width={{ base: "10rem", md: "40vw", lg: "25vw" }} 
+          ml={{ base: "-1.3rem", md: "-3rem", lg: "3rem" }} 
+          mb={{ base: "-5rem", md: "-8rem", lg: "-9rem" }} 
+          filter="invert(1) brightness(2)" 
+          transform="rotate(-90deg)"
         />
         {/* Texto debajo */}
         <Text
-          fontSize={{ base: "sm", md: "1.5rem", lg: "1.5rem" }}
+          fontSize={{ base: "sm", md: "1rem", lg: "1rem" }}
           fontWeight="bold"
-          textAlign={{ base: "center", lg: "left" }} // Centrado en mobile
-          p={{ base: "1rem", lg: "0rem" }} // Centrado en mobile
+          textAlign={{ base: "center", lg: "left" }} 
+          p={{ base: "1rem", lg: "0rem" }}
         >
           Bernardino Boronat Mas (Nani Boronat), Barcelona 1968.
         </Text>
