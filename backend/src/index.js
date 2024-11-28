@@ -5,6 +5,7 @@ import configureRoutes from './routes';
 import connectDB from './db.js'; // Importa la conexión a MongoDB
 import Product from './models/Product.js'; // Ajusta la ruta según tu estructura de carpetas
 
+
 const app = express();
 
 // Conectar a MongoDB
