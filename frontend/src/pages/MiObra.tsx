@@ -7,55 +7,57 @@ import {
   Text,
   Flex,
   Icon,
+  Link,
 } from '@chakra-ui/react';
-import { obras } from '../config/ObraConfig';
+import { collections } from '../config/CollectionConfig';
 import ObraCard from '../components/ObraCard';
-import { FaQuoteLeft } from 'react-icons/fa';
+import { FaArrowRight } from 'react-icons/fa';
 import headerImage from '../assets/nani.jpg';
+import { Link as RouterLink } from 'react-router-dom';
+
 
 const MiObra: React.FC = () => {
-    const [filtro, setFiltro] = useState<string>('');
-    const sliderRef = useRef<HTMLDivElement | null>(null);
-    const [isDragging, setIsDragging] = useState(false);
-    const [startX, setStartX] = useState(0);
-    const [scrollLeft, setScrollLeft] = useState(0);
-  
-    // Manejar el inicio del arrastre
-    const handleMouseDown = (e: React.MouseEvent) => {
-      e.preventDefault(); // Prevenir el comportamiento predeterminado
-      setIsDragging(true);
-      setStartX(e.pageX); // Posición inicial del mouse
-      if (sliderRef.current) {
-        setScrollLeft(sliderRef.current.scrollLeft); // Posición inicial del scroll
-      }
-    };
-  
-    // Manejar el fin del arrastre
-    const handleMouseUpOrLeave = () => {
-      setIsDragging(false); // Desactivar estado de arrastre
-    };
-  
-    // Manejar el movimiento del mouse
-    const handleMouseMove = (e: React.MouseEvent) => {
-      if (!isDragging || !sliderRef.current) return; // Si no está arrastrando, salir
-      e.preventDefault(); // Prevenir comportamiento predeterminado
-      const dx = e.pageX - startX; // Diferencia de desplazamiento
-      sliderRef.current.scrollLeft = scrollLeft - dx; // Actualizar posición del scroll
-    };
-  
-    // Obtener los periodos únicos
-    const periodos = Array.from(new Set(obras.map((obra) => obra.collection)));
-  
-    // Filtrar obras por periodo
-    const obrasFiltradas = filtro
-      ? obras.filter((obra) => obra.collection === filtro)
-      : obras;
+  const [filtro, setFiltro] = useState<string>('');
+  const sliderRef = useRef<HTMLDivElement | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  // Manejar el inicio del arrastre
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+    setStartX(e.pageX);
+    if (sliderRef.current) {
+      setScrollLeft(sliderRef.current.scrollLeft);
+    }
+  };
+
+  // Manejar el fin del arrastre
+  const handleMouseUpOrLeave = () => {
+    setIsDragging(false);
+  };
+
+  // Manejar el movimiento del mouse
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !sliderRef.current) return;
+    e.preventDefault();
+    const dx = e.pageX - startX;
+    sliderRef.current.scrollLeft = scrollLeft - dx;
+  };
+
+  // Obtener los nombres únicos de las colecciones
+  const colecciones = collections.map((collection) => collection.name);
+
+  // Filtrar las colecciones según el filtro seleccionado
+  const coleccionesFiltradas = filtro
+    ? collections.filter((collection) => collection.name === filtro)
+    : collections;
 
   return (
     <Box>
       {/* Cabecera con imagen de fondo */}
       <Box position="relative" w="100%" h="100vh" bg="gray.800" overflow="hidden">
-        {/* Imagen de fondo */}
         <Image
           src={headerImage}
           alt="Imagen de cabecera"
@@ -65,7 +67,6 @@ const MiObra: React.FC = () => {
           h="100%"
         />
 
-        {/* Overlay opcional para oscurecer */}
         <Box
           position="absolute"
           top="0"
@@ -76,7 +77,6 @@ const MiObra: React.FC = () => {
           zIndex={1}
         />
 
-        {/* Franja lateral o superior */}
         <Box
           position="absolute"
           top={{ base: 0, lg: '0' }}
@@ -102,68 +102,93 @@ const MiObra: React.FC = () => {
           </Text>
         </Box>
 
-        {/* Header en la cabecera */}
+        {/* Índice de colecciones */}
         <Flex
           position="absolute"
-          bottom="0%"
-          left="50%"
-          transform="translate(-50%, 0)"
+          bottom="5%"
+          width="50vw"
+          left="43%"
           zIndex={3}
-          color="white"
-          textAlign="center"
           flexDirection="column"
           alignItems="center"
-          px="1rem"
-          width={{ base: '100vw', lg: '55rem' }}
+          bg="rgba(0, 0, 0, 0.7)"
+          borderRadius="md"
+          p="2rem"
         >
-          {/* Icono de quotes */}
-          <Icon as={FaQuoteLeft} boxSize={{ base: '2rem', lg: '3rem' }} color="whiteAlpha.800" mb={2} />
+{collections.map((collection) => (
+  <Flex
+    key={collection.slug}
+    align="center"
+    justify="space-between"
+    w="100%"
+    p={2}
+    _hover={{ bg: 'rgba(255, 255, 255, 0.1)', cursor: 'pointer' }}
+  >
+    <Link
+      as={RouterLink}
+      to={`/colecciones/${collection.slug}`}
+      style={{ display: 'flex', alignItems: 'center', width: '100%' }}
+    >
+      {/* Fecha */}
+      <Text fontSize="lg" fontWeight="bold" color="white" mr={2}>
+        {collection.date}
+      </Text>
 
-          {/* Ajustes del texto */}
-          <Heading
-            as="h1"
-            size="md"
-            lineHeight="1.5rem"
-            fontSize={{ base: '1rem', lg: '1.25rem' }}
-            fontWeight="normal"
-            letterSpacing="0.1rem"
-            px="1rem"
-            pb={{ base: '4rem', lg: '5rem' }}
-          >
-            Me complace sentirme como un perpetuo extranjero. Un escultor en el cuerpo de un pintor y un pintor cuando esculpo; pero, ante todo, soy un aprendiz en rebeldía…
-          </Heading>
-        </Flex>
+      {/* Contenedor del nombre y la flecha */}
+      <Flex
+        align="center"
+        flex="1"
+        position="relative"
+        _hover={{
+          '> .arrow-icon': { opacity: 1, transform: 'translateX(8px)' }, // Aparece al hacer hover
+        }}
+      >
+        {/* Nombre de la colección */}
+        <Text fontSize="lg" color="white" mr={2}>
+          {collection.name}
+        </Text>
+
+        {/* Flecha */}
+        <Icon
+          as={FaArrowRight}
+          color="white"
+          opacity={0} // Oculta inicialmente
+          transition="opacity 0.3s ease, transform 0.3s ease"
+          className="arrow-icon"
+          position="absolute"
+          right="20px" // Ajusta según tu diseño
+        />
+      </Flex>
+    </Link>
+  </Flex>
+))}
+
+</Flex>
       </Box>
 
       <Box>
-      {/* Filtro por periodo */}
-      <Box px="3rem" my="2rem" maxW="40vw">
-        <Select
-          placeholder="Filtrar por colección"
-          value={filtro}
-          onChange={(e) => setFiltro(e.target.value)}
-        >
-          {periodos.map((collection) => (
-            <option key={collection} value={collection}>
-              {collection}
-            </option>
-          ))}
-        </Select>
-      </Box>
+        {/* Filtro por colección */}
+        <Box px="3rem" my="2rem" maxW="40vw">
+          <Select
+            placeholder="Filtrar por colección"
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+          >
+            {colecciones.map((collection) => (
+              <option key={collection} value={collection}>
+                {collection}
+              </option>
+            ))}
+          </Select>
+        </Box>
 
-      {/* Galería separada por periodos */}
-      {periodos.map((periodo) => {
-        const obrasPeriodo = obrasFiltradas.filter(
-          (obra) => obra.collection === periodo
-        );
-
-        if (obrasPeriodo.length === 0) return null;
-
-        return (
-          <Box key={periodo} pl="3rem" my="3rem">
+        {/* Galería separada por colección */}
+        {coleccionesFiltradas.map((collection) => (
+          <Box key={collection.name} pl="3rem" my="3rem">
             <Heading as="h2" size="md" mb="2rem">
-              {periodo}
+              {collection.name}
             </Heading>
+            <Text mb="2rem">{collection.description}</Text>
             <Flex
               ref={sliderRef}
               onMouseDown={handleMouseDown}
@@ -172,30 +197,34 @@ const MiObra: React.FC = () => {
               onMouseMove={handleMouseMove}
               overflowX="scroll"
               css={{
-                '&::-webkit-scrollbar': { display: 'none' }, // Ocultar scrollbar
-                '-ms-overflow-style': 'none', // IE y Edge
-                'scrollbar-width': 'none', // Firefox
+                '&::-webkit-scrollbar': { display: 'none' },
+                '-ms-overflow-style': 'none',
+                'scrollbar-width': 'none',
               }}
               gap="1rem"
               pl="0rem"
-              cursor={isDragging ? 'grabbing' : 'grab'} // Cambiar cursor según estado
+              cursor={isDragging ? 'grabbing' : 'grab'}
             >
-              {obrasPeriodo.map((obra) => (
+              {collection.obras.map((obra) => (
                 <Box
                   key={obra.titulo}
                   flex="0 0 auto"
                   width={{ base: '80%', sm: '60%', md: '40%', lg: '22%' }}
                 >
-                  <ObraCard obra={obra} />
+                  <ObraCard
+                    obra={{
+                      ...obra,
+                      collection: collection.name,
+                      imagen: obra.imagen || '/path/to/placeholder-image.jpg',
+                    }}
+                  />
                 </Box>
               ))}
               <Box flex="0 0 auto" width="1rem" />
             </Flex>
           </Box>
-        );
-      })}
-    </Box>
-
+        ))}
+      </Box>
     </Box>
   );
 };

@@ -20,7 +20,7 @@ const App: React.FC = () => {
             <Route path="/tienda-online" element={<TiendaOnline />} />
             <Route path="/sobre-mi" element={<SobreMi />} />
             <Route path="/mi-obra" element={<MiObra />} />
-            <Route path="/coleccion/:collectionName" element={<CollectionPage />} /> {/* Ruta dinámica */}
+            <Route path="/coleccion/:slug" element={<CollectionPage />} />
             <Route path="/carrito" element={<Cart />} />
           </Routes>
         </Layout>

@@ -95,22 +95,25 @@ width={{ base: "100vw", lg: "55rem" }}
 
       </Box>
 
-      {/* Texto debajo de la cabecera */}
-      <Box px={{ base: '1rem', md: '3rem', lg: '5rem' }} py="3rem">
-        <Text fontSize="lg" lineHeight="1.8" textAlign="justify">
-          Hola, soy Bernardino Boronat Mas (Nani Boronat), nacido en Barcelona
-          en 1968. Mi vida ha sido un viaje lleno de arte, creatividad y
-          expresión. Durante años, he explorado diferentes técnicas y
-          materiales para expresar mis ideas y emociones, reflejando una visión
-          única del mundo que me rodea.
-        </Text>
-        <Text fontSize="lg" lineHeight="1.8" textAlign="justify" mt={4}>
-          Mi trabajo ha sido expuesto en galerías de arte y eventos culturales,
-          ganando reconocimiento tanto a nivel local como internacional. Mi
-          objetivo es inspirar a otros a través de mi obra, creando un puente
-          entre mis emociones y las experiencias de quienes las observan.
-        </Text>
-      </Box>
+     {/* Texto debajo de la cabecera */}
+<Box px={{ base: '1rem', md: '3rem', lg: '5rem' }} py="3rem">
+  <Text fontSize="lg" lineHeight="1.8" textAlign="justify">
+    <strong>Nani Boronat. Barcelona 1968</strong>
+  </Text>
+  <Text fontSize="lg" lineHeight="1.8" textAlign="justify" mt={4}>
+    Bernardino Boronat Mas reside en Múnich desde 2007. El cambiante trabajo de su padre le llevó a nacer en Barcelona, ciudad donde vivió hasta sus cuatro años. Valencia será su siguiente destino, origen de sus progenitores y la ciudad con la que más identificado se siente. Al cumplir los quince años su familia fija su residencia definitiva en Madrid, donde Boronat se formará profesionalmente. Entre 1988 y 1990 regresa a Valencia para estudiar en la escuela de arquitectura de la Universidad Politécnica (U.P.V). Pero la falta de vocación por la arquitectura hará que abandone esta disciplina y solicite su ingreso en Facultad de Bellas Artes (Universidad Complutense de Madrid), licenciándose en 1996 bajo la especialidad de pintura.
+  </Text>
+  <Text fontSize="lg" lineHeight="1.8" textAlign="justify" mt={4}>
+    En 1992 obtiene una beca durante el primer semestre del segundo curso que le llevará a estudiar en el Loras College de Dubuque, Iowa. Finaliza la carrera de Bellas Artes becado por el programa Erasmus en la Universität Geschamthochschule de Kassel, Alemania. En 1996 inicia una extensa carrera como pintor y escultor, exponiendo tanto individual como colectivamente en salas y ferias de España y Portugal, de Alemania, Suiza, Holanda y los Estados Unidos. Parte de su obra se encuentra hoy en los fondos de galerías y museos así como en colecciones privadas.
+  </Text>
+  <Text fontSize="lg" lineHeight="1.8" textAlign="justify" mt={4}>
+    Ha colaborado con artistas de otras disciplinas: arquitectos, paisajistas y músicos. Desde hace más de dos décadas mantiene en paralelo a su proyección artística la actividad como fotógrafo especializado en arquitectura. Recientemente se ha publicado su primer ensayo sobre fotografía titulado <em>La musa precoz: la fotografía como fenómeno antropológico</em>.
+  </Text>
+  <Text fontSize="lg" lineHeight="1.8" textAlign="justify" mt={4}>
+    La trayectoria de Nani Boronat ha estado marcada por los diferentes lugares en los que ha residido: España, los Estados Unidos y Alemania. En la actualidad, junto a su esposa, la pianista azerbayana Ulviya Abdullayeva, desarrolla un vasto proyecto que bajo el título <em>“De la Alhambra al Shirvanshah”</em> propone un enlace cultural de dimensión artístico-antropológica entre sus culturas nativas: la ibérica y la azerí. Desarrollando una serie de obras en las que, bajo la fusión de la música, la pintura y la escultura, Abdullayeva y Boronat nutren el proyecto de materiales que extraen de las fuentes folclóricas, clásicas y contemporáneas de sus respectivas tradiciones.
+  </Text>
+</Box>
+
     </Box>
   );
 };

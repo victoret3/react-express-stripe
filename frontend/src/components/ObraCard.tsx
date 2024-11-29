@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Image, Text } from '@chakra-ui/react';
+import { Box, Image, Text, Link } from '@chakra-ui/react';
+import { Link as RouterLink } from 'react-router-dom';
 
 interface Obra {
   imagen: string;
@@ -33,7 +34,19 @@ const ObraCard: React.FC<{ obra: Obra }> = ({ obra }) => {
         <Text fontWeight="bold" fontSize="lg">
           {obra.titulo}
         </Text>
-       
+        <Text fontSize="sm" color="gray.600">
+          {obra.fecha}
+        </Text>
+        {/* Enlace a la colección */}
+        <Link
+          as={RouterLink}
+          to={`/coleccion/${obra.collection.toLowerCase().replace(/\s+/g, '-')}`} // Ruta dinámica basada en la colección
+          fontSize="sm"
+          color="blue.500"
+          _hover={{ textDecoration: 'underline' }}
+        >
+          {obra.collection}
+        </Link>
       </Box>
     </Box>
   );
