@@ -105,9 +105,8 @@ const MiObra: React.FC = () => {
         {/* Índice de colecciones */}
         <Flex
           position="absolute"
-          bottom="5%"
-          width="50vw"
-          left="43%"
+          bottom="1rem"
+          left="8rem"
           zIndex={3}
           flexDirection="column"
           alignItems="center"
@@ -121,12 +120,12 @@ const MiObra: React.FC = () => {
     align="center"
     justify="space-between"
     w="100%"
-    p={2}
+    p={1}
     _hover={{ bg: 'rgba(255, 255, 255, 0.1)', cursor: 'pointer' }}
   >
     <Link
       as={RouterLink}
-      to={`/colecciones/${collection.slug}`}
+      to={`/coleccion/${collection.slug}`}
       style={{ display: 'flex', alignItems: 'center', width: '100%' }}
     >
       {/* Fecha */}
@@ -138,6 +137,8 @@ const MiObra: React.FC = () => {
       <Flex
         align="center"
         flex="1"
+        width="100%"
+        pr="2rem"
         position="relative"
         _hover={{
           '> .arrow-icon': { opacity: 1, transform: 'translateX(8px)' }, // Aparece al hacer hover

@@ -2,8 +2,8 @@ import { extendTheme } from '@chakra-ui/react';
 
 const theme = extendTheme({
   fonts: {
-    heading: "'Rock Salt', sans-serif", // Usar para encabezados
-    body: "'Rock Salt', sans-serif",    // Usar para texto general
+    heading: "'Arial Black', sans-serif", // Para encabezados
+    body: "'Arial', sans-serif",          // Para texto general
   },
   styles: {
     global: {
@@ -13,6 +13,16 @@ const theme = extendTheme({
         fontWeight: 'normal',
         fontStyle: 'normal',
       },
+    },
+  },
+  colors: {
+    brand: {
+      primary: '#EB6953',   // Rojo coral
+      secondary: '#F3EEE6', // Beige claro
+      accent1: '#93E3FE',   // Azul cielo
+      accent2: '#DFDB44',   // Amarillo dorado
+      accent3: '#04A0D4',   // Azul vibrante
+      accent4: '#FFC47E',   // Naranja claro
     },
   },
 });

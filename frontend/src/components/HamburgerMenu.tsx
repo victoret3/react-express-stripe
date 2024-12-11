@@ -41,19 +41,81 @@ const HamburgerMenu: React.FC = () => {
         <DrawerContent
           h="100vh"
           maxW={{ base: '100vw', lg: '30rem' }}
-          bg="rgba(0, 0, 0, 0.9)"
+          bg="black"
           color="white"
         >
-          <DrawerCloseButton />
-          {/* Enlaces del menú centrados verticalmente */}
-          <DrawerBody display="flex" justifyContent="center" alignItems="center">
-            <VStack spacing={6} align="center" fontSize="3xl">
-              <Link to="/sobre-mi" onClick={closeDrawer}>Sobre mí</Link>
-              <Link to="/mi-obra" onClick={closeDrawer}>Mi obra</Link>
-              <Link to="/tienda-online" onClick={closeDrawer}>Tienda online</Link>
-              <Link to="/nfts" onClick={closeDrawer}>NFTs</Link>
-            </VStack>
-          </DrawerBody>
+<DrawerBody display="flex" justifyContent="center" alignItems="center">
+  <VStack spacing={6} align="center" fontSize="3xl" width="100%">
+    <Link to="/sobre-mi" onClick={closeDrawer}>
+      <Box
+        as="span"
+        bg="brand.accent2" // Fondo normal amarillo
+        color="brand.accent3" // Texto azul vibrante
+        px={6}
+        py={3}
+        borderRadius="md"
+        fontFamily="heading"
+        width="250px" // Ancho fijo
+        textAlign="center"
+        _hover={{ bg: "brand.accent3", color: "brand.accent2" }} // Hover inverso
+        display="inline-block"
+      >
+        Sobre mí
+      </Box>
+    </Link>
+    <Link to="/mi-obra" onClick={closeDrawer}>
+      <Box
+        as="span"
+        bg="brand.primary" // Fondo normal coral
+        color="brand.accent2" // Texto amarillo
+        px={6}
+        py={3}
+        borderRadius="md"
+        fontFamily="heading"
+        width="250px" // Ancho fijo
+        textAlign="center"
+        _hover={{ bg: "brand.accent2", color: "brand.primary" }} // Hover inverso
+        display="inline-block"
+      >
+        Mi obra
+      </Box>
+    </Link>
+    <Link to="/tienda-online" onClick={closeDrawer}>
+      <Box
+        as="span"
+        bg="brand.accent1" // Fondo normal azul cielo
+        color="brand.primary" // Texto coral
+        px={6}
+        py={3}
+        borderRadius="md"
+        fontFamily="heading"
+        width="250px" // Ancho fijo
+        textAlign="center"
+        _hover={{ bg: "brand.primary", color: "brand.accent1" }} // Hover inverso
+        display="inline-block"
+      >
+        Shop
+      </Box>
+    </Link>
+    <Link to="/nfts" onClick={closeDrawer}>
+      <Box
+        as="span"
+        bg="brand.accent4" // Fondo normal naranja claro
+        color="brand.accent3" // Texto azul vibrante
+        px={6}
+        py={3}
+        borderRadius="md"
+        fontFamily="heading"
+        width="250px" // Ancho fijo
+        textAlign="center"
+        _hover={{ bg: "brand.accent3", color: "brand.accent4" }} // Hover inverso
+        display="inline-block"
+      >
+        Comunidad
+      </Box>
+    </Link>
+  </VStack>
+</DrawerBody>
 
           {/* Enlaces sociales al fondo */}
           <SimpleGrid
