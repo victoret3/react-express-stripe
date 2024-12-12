@@ -42,23 +42,23 @@ const SobreMi: React.FC = () => {
           left={{ base: '0', lg: '0' }}
           h={{ base: '5rem', lg: '100%' }} // Altura completa en escritorio.
           w={{ base: '100%', lg: '7rem' }} // Ancho de la franja en escritorio.
-          bg="rgba(0, 0, 0, 0.9)"
+          bg="brand.accent2" // Fondo normal amarillo
+       
           zIndex={2} // Asegura visibilidad por encima del overlay.
           display="flex"
           justifyContent="center"
           alignItems="center"
         >
-          <Text
+          <Heading
             fontSize={{ base: '1.5rem', lg: '2rem' }}
-            color="white"
-            textAlign="center"
+            color="brand.accent3" // Texto azul vibrante            textAlign="center"
             sx={{
               writingMode: { base: 'horizontal-tb', lg: 'vertical-rl' }, // Orientación en escritorio y móvil.
               transform: { base: 'none', lg: 'rotate(180deg)' }, // Girar texto en escritorio.
             }}
           >
             Sobre mí
-          </Text>
+          </Heading>
         </Box>
 
         {/* Header en la cabecera */}

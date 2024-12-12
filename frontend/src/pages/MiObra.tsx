@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   Box,
   Heading,
@@ -15,48 +15,48 @@ import { FaArrowRight } from 'react-icons/fa';
 import headerImage from '../assets/nani.jpg';
 import { Link as RouterLink } from 'react-router-dom';
 
-
 const MiObra: React.FC = () => {
   const [filtro, setFiltro] = useState<string>('');
+  const [hoveredCollection, setHoveredCollection] = useState<string | null>(null);
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  // Manejar el inicio del arrastre
+  useEffect(() => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollLeft = 0;
+    }
+  }, []);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsDragging(true);
-    setStartX(e.pageX);
-    if (sliderRef.current) {
-      setScrollLeft(sliderRef.current.scrollLeft);
-    }
+    setStartX(e.pageX - (sliderRef.current?.offsetLeft || 0));
+    setScrollLeft(sliderRef.current?.scrollLeft || 0);
   };
 
-  // Manejar el fin del arrastre
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !sliderRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - (sliderRef.current.offsetLeft || 0);
+    const walk = (x - startX) * 1.5;
+    sliderRef.current.scrollLeft = scrollLeft - walk;
+  };
+
   const handleMouseUpOrLeave = () => {
     setIsDragging(false);
   };
 
-  // Manejar el movimiento del mouse
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !sliderRef.current) return;
-    e.preventDefault();
-    const dx = e.pageX - startX;
-    sliderRef.current.scrollLeft = scrollLeft - dx;
-  };
-
-  // Obtener los nombres únicos de las colecciones
   const colecciones = collections.map((collection) => collection.name);
 
-  // Filtrar las colecciones según el filtro seleccionado
   const coleccionesFiltradas = filtro
     ? collections.filter((collection) => collection.name === filtro)
     : collections;
 
   return (
     <Box>
-      {/* Cabecera con imagen de fondo */}
+      {/* Cabecera principal */}
       <Box position="relative" w="100%" h="100vh" bg="gray.800" overflow="hidden">
         <Image
           src={headerImage}
@@ -66,32 +66,32 @@ const MiObra: React.FC = () => {
           w="100%"
           h="100%"
         />
-
         <Box
           position="absolute"
           top="0"
           left="0"
           w="100%"
           h="100%"
-          bg="rgba(0, 0, 0, 0.5)"
+          bg="rgba(0, 0, 0, 0.4)"
           zIndex={1}
         />
 
+        {/* Franja lateral */}
         <Box
           position="absolute"
           top={{ base: 0, lg: '0' }}
-          left={{ base: '0', lg: '0' }}
-          h={{ base: '5rem', lg: '100%' }}
-          w={{ base: '100%', lg: '7rem' }}
-          bg="rgba(0, 0, 0, 0.9)"
-          zIndex={2}
+          left="0"
+          h="100%"
+          w={{ base: '5rem', lg: '7rem' }}
+          bg="brand.primary"
           display="flex"
           justifyContent="center"
           alignItems="center"
+          zIndex={2}
         >
-          <Text
+          <Heading
             fontSize={{ base: '1.5rem', lg: '2rem' }}
-            color="white"
+            color="brand.accent2"
             textAlign="center"
             sx={{
               writingMode: { base: 'horizontal-tb', lg: 'vertical-rl' },
@@ -99,112 +99,121 @@ const MiObra: React.FC = () => {
             }}
           >
             Mi Obra
-          </Text>
+          </Heading>
         </Box>
 
-        {/* Índice de colecciones */}
+        {/* Contenedor principal centrado */}
         <Flex
           position="absolute"
-          bottom="1rem"
-          left="8rem"
+          top="50%"
+          left="50%"
+          transform="translate(-50%, -50%)"
           zIndex={3}
-          flexDirection="column"
-          alignItems="center"
-          bg="rgba(0, 0, 0, 0.7)"
-          borderRadius="md"
-          p="2rem"
+          w="90%"
+          maxW="1150px"
+          direction={{ base: 'column', lg: 'row' }}
+          justify="space-between"
+          align="center"
+          gap={{ base: '1rem', lg: '2rem' }}
         >
-{collections.map((collection) => (
-  <Flex
-    key={collection.slug}
-    align="center"
-    justify="space-between"
-    w="100%"
-    p={1}
-    _hover={{ bg: 'rgba(255, 255, 255, 0.1)', cursor: 'pointer' }}
-  >
-    <Link
-      as={RouterLink}
-      to={`/coleccion/${collection.slug}`}
-      style={{ display: 'flex', alignItems: 'center', width: '100%' }}
-    >
-      {/* Fecha */}
-      <Text fontSize="lg" fontWeight="bold" color="white" mr={2}>
-        {collection.date}
-      </Text>
+          {/* Tabla de colecciones */}
+          <Flex
+            direction="column"
+            bg="rgba(0, 0, 0, 0.8)"
+            borderRadius="md"
+            p={{ base: '1rem', lg: '2rem' }}
+            gap="0rem"
+            maxW={{ base: '100%', lg: '65%' }}
+          >
+            {collections.map((collection) => (
+              <Flex
+                key={collection.slug}
+                align="center"
+                justify="space-between"
+                w="100%"
+                _hover={{ bg: 'rgba(255, 255, 255, 0.1)', cursor: 'pointer' }}
+                onMouseEnter={() => setHoveredCollection(collection.slug)}
+                onMouseLeave={() => setHoveredCollection(null)}
+              >
+                <Link
+                  as={RouterLink}
+                  to={`/coleccion/${collection.slug}`}
+                  style={{ display: 'flex', alignItems: 'center', width: '100%' }}
+                >
+                  <Text fontSize="lg" fontWeight="bold" color="white" mr={2}>
+                    {collection.date}
+                  </Text>
+                  <Flex
+                    align="center"
+                    flex="1"
+                    pr="2rem"
+                    position="relative"
+                    _hover={{
+                      '> .arrow-icon': { opacity: 1, transform: 'translateX(8px)' },
+                    }}
+                  >
+                    <Text fontSize="lg" color="white" mr={2}>
+                      {collection.name}
+                    </Text>
+                    <Icon
+                      as={FaArrowRight}
+                      color="white"
+                      opacity={0}
+                      transition="opacity 0.3s ease, transform 0.3s ease"
+                      className="arrow-icon"
+                      position="absolute"
+                      right="20px"
+                    />
+                  </Flex>
+                </Link>
+              </Flex>
+            ))}
+          </Flex>
 
-      {/* Contenedor del nombre y la flecha */}
-      <Flex
-        align="center"
-        flex="1"
-        width="100%"
-        pr="2rem"
-        position="relative"
-        _hover={{
-          '> .arrow-icon': { opacity: 1, transform: 'translateX(8px)' }, // Aparece al hacer hover
-        }}
-      >
-        {/* Nombre de la colección */}
-        <Text fontSize="lg" color="white" mr={2}>
-          {collection.name}
-        </Text>
-
-        {/* Flecha */}
-        <Icon
-          as={FaArrowRight}
-          color="white"
-          opacity={0} // Oculta inicialmente
-          transition="opacity 0.3s ease, transform 0.3s ease"
-          className="arrow-icon"
-          position="absolute"
-          right="20px" // Ajusta según tu diseño
-        />
-      </Flex>
-    </Link>
-  </Flex>
-))}
-
-</Flex>
+          {/* Imagen dinámica */}
+          {hoveredCollection && (
+            <Box
+              maxW={{ base: '90%', lg: '35%' }}
+              transition="max-width 0.3s ease-in-out"
+              display="block"
+              boxShadow="lg"
+            >
+              <Image
+                src={
+                  collections.find((col) => col.slug === hoveredCollection)?.obras[0]
+                    ?.imagen || '/path/to/placeholder-image.jpg'
+                }
+                alt="Vista previa de la colección"
+                borderRadius="md"
+              />
+            </Box>
+          )}
+        </Flex>
       </Box>
 
-      <Box>
-        {/* Filtro por colección */}
-        <Box px="3rem" my="2rem" maxW="40vw">
-          <Select
-            placeholder="Filtrar por colección"
-            value={filtro}
-            onChange={(e) => setFiltro(e.target.value)}
-          >
-            {colecciones.map((collection) => (
-              <option key={collection} value={collection}>
-                {collection}
-              </option>
-            ))}
-          </Select>
-        </Box>
-
-        {/* Galería separada por colección */}
+      {/* Galería separada por colección */}
+      <Box px={{ base: '1rem', lg: '3rem' }} py="3rem">
         {coleccionesFiltradas.map((collection) => (
-          <Box key={collection.name} pl="3rem" my="3rem">
-            <Heading as="h2" size="md" mb="2rem">
+          <Box key={collection.name} mb="3rem">
+            <Heading as="h2" size="lg" mb="1rem">
               {collection.name}
             </Heading>
-            <Text mb="2rem">{collection.description}</Text>
+            <Text mb="1rem">{collection.description}</Text>
             <Flex
               ref={sliderRef}
               onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUpOrLeave}
               onMouseLeave={handleMouseUpOrLeave}
-              onMouseMove={handleMouseMove}
               overflowX="scroll"
+              cursor={isDragging ? 'grabbing' : 'grab'}
               css={{
                 '&::-webkit-scrollbar': { display: 'none' },
                 '-ms-overflow-style': 'none',
                 'scrollbar-width': 'none',
               }}
               gap="1rem"
-              pl="0rem"
-              cursor={isDragging ? 'grabbing' : 'grab'}
+              px="1rem"
             >
               {collection.obras.map((obra) => (
                 <Box
