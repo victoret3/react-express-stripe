@@ -76,13 +76,13 @@ const MiObra: React.FC = () => {
           zIndex={1}
         />
 
-        {/* Franja lateral */}
+        {/* Franja lateral o superior */}
         <Box
           position="absolute"
           top={{ base: 0, lg: '0' }}
-          left="0"
-          h="100%"
-          w={{ base: '5rem', lg: '7rem' }}
+          left={{ base: '0', lg: '0' }}
+          h={{ base: '5rem', lg: '100%' }}
+          w={{ base: '100%', lg: '7rem' }}
           bg="brand.primary"
           display="flex"
           justifyContent="center"
@@ -102,7 +102,7 @@ const MiObra: React.FC = () => {
           </Heading>
         </Box>
 
-        {/* Contenedor principal centrado */}
+        {/* Contenedor principal */}
         <Flex
           position="absolute"
           top="50%"
@@ -123,7 +123,7 @@ const MiObra: React.FC = () => {
             borderRadius="md"
             p={{ base: '1rem', lg: '2rem' }}
             gap="0rem"
-            maxW={{ base: '100%', lg: '65%' }}
+            maxW={{ base: '100%', lg: '60%' }}
           >
             {collections.map((collection) => (
               <Flex
@@ -173,7 +173,7 @@ const MiObra: React.FC = () => {
           {/* Imagen dinámica */}
           {hoveredCollection && (
             <Box
-              maxW={{ base: '90%', lg: '35%' }}
+              maxW={{ base: '0%', lg: '30%' }}
               transition="max-width 0.3s ease-in-out"
               display="block"
               boxShadow="lg"
