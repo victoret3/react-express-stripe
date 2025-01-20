@@ -320,14 +320,89 @@ import olivar002 from "../assets/Obras/TRAMPA DE POLLOCK/olivar002x6_copia.jpg";
 import olivar005 from "../assets/Obras/TRAMPA DE POLLOCK/olivar005x6-copia.jpg";
 import olivar006 from "../assets/Obras/TRAMPA DE POLLOCK/olivar006x6-copia.jpg";
 import olivar009 from "../assets/Obras/TRAMPA DE POLLOCK/olivar009x6-copia.jpg";
+import escudo01 from "../assets/Obras/Centinelas/Escudos/01.jpg";
+import escudo02 from "../assets/Obras/Centinelas/Escudos/02.jpg";
+import escudo03 from "../assets/Obras/Centinelas/Escudos/03.jpg";
+import escudo04 from "../assets/Obras/Centinelas/Escudos/04.jpg";
+import escudo05 from "../assets/Obras/Centinelas/Escudos/05.jpg";
+import escudo06 from "../assets/Obras/Centinelas/Escudos/06.jpg";
+import escudo07 from "../assets/Obras/Centinelas/Escudos/07.jpg";
+import escudo08 from "../assets/Obras/Centinelas/Escudos/08.jpg";
+import escudo09 from "../assets/Obras/Centinelas/Escudos/09.jpeg";
+import escudo10 from "../assets/Obras/Centinelas/Escudos/10.jpg";
+import escudo11 from "../assets/Obras/Centinelas/Escudos/11.jpg";
+import escudo12 from "../assets/Obras/Centinelas/Escudos/12.jpg";
+import escudo13 from "../assets/Obras/Centinelas/Escudos/13.jpg";
+import exp01HDO01 from "../assets/Obras/Centinelas/Exposiciones/01HDO_01.jpg";
+import exp02YARAT01 from "../assets/Obras/Centinelas/Exposiciones/02YARAT_01.jpg";
+import exp02YARAT02 from "../assets/Obras/Centinelas/Exposiciones/02YARAT_02.jpg";
+import exp03MUGAM01 from "../assets/Obras/Centinelas/Exposiciones/03MUGAM_01.jpg";
+import exp03MUGAM02 from "../assets/Obras/Centinelas/Exposiciones/03MUGAM_02.jpg";
+import exp04HJK02 from "../assets/Obras/Centinelas/Exposiciones/04HJK_02.jpg";
+import exp04HJK03 from "../assets/Obras/Centinelas/Exposiciones/04HJK_03.jpg";
+import exp04HJK04 from "../assets/Obras/Centinelas/Exposiciones/04HJK_04.jpg";
+import exp04HJK05 from "../assets/Obras/Centinelas/Exposiciones/04HJK_05.jpg";
+import exp04HJKCartel01 from "../assets/Obras/Centinelas/Exposiciones/04HJK(cartel)_01.jpg";
+import foto06 from "../assets/Obras/Centinelas/Fotografias/foto06.jpg";
+import foto07 from "../assets/Obras/Centinelas/Fotografias/foto07.jpg";
+import foto08 from "../assets/Obras/Centinelas/Fotografias/foto08.jpg";
+import foto09 from "../assets/Obras/Centinelas/Fotografias/foto09.jpg";
+import foto10 from "../assets/Obras/Centinelas/Fotografias/foto10.jpg";
+import foto11 from "../assets/Obras/Centinelas/Fotografias/foto11.jpg";
+import foto12 from "../assets/Obras/Centinelas/Fotografias/foto12.jpg";
+import foto13 from "../assets/Obras/Centinelas/Fotografias/foto13.jpg";
+import foto14 from "../assets/Obras/Centinelas/Fotografias/foto14.jpg";
+import foto15 from "../assets/Obras/Centinelas/Fotografias/foto15.jpg";
+import foto16 from "../assets/Obras/Centinelas/Fotografias/foto16.jpg";
+import foto17 from "../assets/Obras/Centinelas/Fotografias/foto17.jpg";
+import foto18 from "../assets/Obras/Centinelas/Fotografias/foto18.jpg";
+import foto19 from "../assets/Obras/Centinelas/Fotografias/foto19.jpg";
+import foto20 from "../assets/Obras/Centinelas/Fotografias/foto20.jpg";
+import foto21 from "../assets/Obras/Centinelas/Fotografias/foto21.jpg";
+import foto22 from "../assets/Obras/Centinelas/Fotografias/foto22.jpg";
+import foto23 from "../assets/Obras/Centinelas/Fotografias/foto23.jpg";
+import foto24 from "../assets/Obras/Centinelas/Fotografias/foto24.jpg";
+import foto25 from "../assets/Obras/Centinelas/Fotografias/foto25.jpg";
+import foto26 from "../assets/Obras/Centinelas/Fotografias/foto26.jpg";
+import foto27 from "../assets/Obras/Centinelas/Fotografias/foto27.jpg";
+import foto28 from "../assets/Obras/Centinelas/Fotografias/foto28.jpg";
+import foto29 from "../assets/Obras/Centinelas/Fotografias/foto29.jpg";
+import foto30 from "../assets/Obras/Centinelas/Fotografias/foto30.jpg";
+import foto31 from "../assets/Obras/Centinelas/Fotografias/fotos31.jpg";
+import foto32 from "../assets/Obras/Centinelas/Fotografias/fotos32.jpg";
+import foto33 from "../assets/Obras/Centinelas/Fotografias/fotos33.jpg.jpg";
+import foto34 from "../assets/Obras/Centinelas/Fotografias/fotos34.jpg";
+import fotos01 from "../assets/Obras/Centinelas/Fotografias/fotos01.jpg";
+import fotos02 from "../assets/Obras/Centinelas/Fotografias/fotos02.jpg";
+import fotos03 from "../assets/Obras/Centinelas/Fotografias/fotos03.jpg";
+import fotos04 from "../assets/Obras/Centinelas/Fotografias/fotos04.jpg";
+import fotos05 from "../assets/Obras/Centinelas/Fotografias/fotos05.jpg";
+import fotos31 from "../assets/Obras/Centinelas/Fotografias/fotos31.jpg";
+import fotos32 from "../assets/Obras/Centinelas/Fotografias/fotos32.jpg";
+import fotos33 from "../assets/Obras/Centinelas/Fotografias/fotos33.jpg";
+import fotos34 from "../assets/Obras/Centinelas/Fotografias/fotos34.jpg";
+import fotos35 from "../assets/Obras/Centinelas/Fotografias/fotos35.jpg";
+import fotos36 from "../assets/Obras/Centinelas/Fotografias/fotos36.jpg";
+import mapa01 from "../assets/Obras/Centinelas/Mapas/mapas01.jpg";
+import mapa02 from "../assets/Obras/Centinelas/Mapas/mapas02.jpg";
+import mapa03 from "../assets/Obras/Centinelas/Mapas/mapas03.jpg";
+import mapa04 from "../assets/Obras/Centinelas/Mapas/mapas04.jpg";
+import mapa05 from "../assets/Obras/Centinelas/Mapas/mapas05.jpg";
+import mapa06 from "../assets/Obras/Centinelas/Mapas/mapas06.jpg";
+import mapa07 from "../assets/Obras/Centinelas/Mapas/mapas07.jpg";
+import mapa08 from "../assets/Obras/Centinelas/Mapas/mapas08.jpg";
+import mapa09 from "../assets/Obras/Centinelas/Mapas/mapas09.jpg";
+import mapa10 from "../assets/Obras/Centinelas/Mapas/mapas10.jpg";
+import mapa11 from "../assets/Obras/Centinelas/Mapas/mapas11.jpg";
 
 
 interface Obra {
-  imagen?: string; // Hacemos opcional la imagen para colecciones sin imágenes
+  imagen?: string;
+  video?: string;  // <-- Añadir esto
+  category?: "video" | "mapa" | "fotografia" | "escudo" | "exposicion";
   titulo: string;
   fecha: string;
 }
-
 interface Collection {
   name: string;
   slug: string; // Ruta dinámica
@@ -859,17 +934,153 @@ export const collections: Collection[] = [
   {
     name: "Centinelas",
     slug: "centinelas",
-    date: "",
+    date: "2017",
     description:
-      "Serie aún no detallada, basada en formas geométricas que representan guardianes abstractos.",
-    obras: [{ titulo: "Centinela 1", fecha: "2020" }],
-  },
+      "Proyecto artístico en el que dos árboles —como guardianes— marcan un territorio simbólico. Boronat retoma materiales y métodos de obras anteriores, inspirándose en lecturas de Homero y Cervantes y adoptando el rol del artista-guerrero.",
+      descriptionLong: [
+        `Centinelas surge en la primavera del 2017 al establecer mi taller en un viejo establo en una aldea a diecisiete kilómetros de mi hogar. El trayecto diario entre Allershausen y Deutenhausen me llevará a prestar especial atención a dos grandes árboles que custodian sendas localidades. En realidad no son más que lindes territoriales. Pero será su impronta estética lo que me lleve a hacerles un seguimiento fotográfico a lo largo de las cuatro estaciones del año; recuperando dos elementos que fueron decisivos en mis inicios como artista plástico. Hablo de la serie “Erosiones” (1990-1993) y de la fotografía analógica.`,
+    
+        `Retomo el uso de troncos, arpilleras y demás objetos de labranza como material de trabajo. Se suma a todo esto mi vocación a la lectura de Homero, Juan de la Cruz y Miguel de Cervantes. Generándose mi interés por la figura del guerrero en similitud con la del artista contemporáneo; y por la relación antropológica de las armas con las gubias del escultor y los pinceles del pintor. En una cercanía estética entre el escudo del guerrero homérico y caballeresco con la obra de arte contemporánea.`,
+    
+        `Entendiendo al objeto “escudo” como un soporte pictórico-escultórico; como una superficie sobre la cual se sedimentan restos de las distintas batallas a las que a diario se enfrenta el artista contemporáneo.`,
+    
+        `Centinelas se proyecta en dos lineas de investigación. Por un lado está el archivo fotográfico que se irá acumulando juntos a los mapas que trazo en mis cuadernos de campo; por otro lado está la obra escultórico-pictórica que viene materializada en los ocho escudos que, en ocasiones nombro en latín scutum o en griego skytos.`,
+    
+        `A éste proyecto —que aparentemente se inicia y concluye en los tres años en los que trabajé en el taller de Deutenhausen— le sucederá un nueva propuesta, iniciada en el 2020, que bajo el título “de la Alhambra a Shirvanshah” se consolidará como una continuidad de Centinelas.`,
+      ],
+    obras: [
+      {
+        video: "https://youtu.be/2za_6iJoS5s?si=gJJhRPN-b4bsXria",
+        titulo: "Centinelas - Vídeo Presentación",
+        fecha: "2023",
+        category: "video",
+      },
+    
+      // A. MAPAS
+      { imagen: mapa01, titulo: "Mapa 01", fecha: "2017", category: "mapa" },
+      { imagen: mapa02, titulo: "Mapa 02", fecha: "2017", category: "mapa" },
+      { imagen: mapa03, titulo: "Mapa 03", fecha: "2017", category: "mapa" },
+      { imagen: mapa04, titulo: "Mapa 04", fecha: "2017", category: "mapa" },
+      { imagen: mapa05, titulo: "Mapa 05", fecha: "2017", category: "mapa" },
+      { imagen: mapa06, titulo: "Mapa 06", fecha: "2017", category: "mapa" },
+      { imagen: mapa07, titulo: "Mapa 07", fecha: "2017", category: "mapa" },
+      { imagen: mapa08, titulo: "Mapa 08", fecha: "2017", category: "mapa" },
+      { imagen: mapa09, titulo: "Mapa 09", fecha: "2017", category: "mapa" },
+      { imagen: mapa10, titulo: "Mapa 10", fecha: "2017", category: "mapa" },
+      { imagen: mapa11, titulo: "Mapa 11", fecha: "2017", category: "mapa" },
+    
+      // B. FOTOGRAFÍAS (foto##)
+      { imagen: foto06, titulo: "Fotografía 06", fecha: "2017", category: "fotografia" },
+      { imagen: foto07, titulo: "Fotografía 07", fecha: "2017", category: "fotografia" },
+      { imagen: foto08, titulo: "Fotografía 08", fecha: "2017", category: "fotografia" },
+      { imagen: foto09, titulo: "Fotografía 09", fecha: "2017", category: "fotografia" },
+      { imagen: foto10, titulo: "Fotografía 10", fecha: "2017", category: "fotografia" },
+      { imagen: foto11, titulo: "Fotografía 11", fecha: "2017", category: "fotografia" },
+      { imagen: foto12, titulo: "Fotografía 12", fecha: "2017", category: "fotografia" },
+      { imagen: foto13, titulo: "Fotografía 13", fecha: "2017", category: "fotografia" },
+      { imagen: foto14, titulo: "Fotografía 14", fecha: "2017", category: "fotografia" },
+      { imagen: foto15, titulo: "Fotografía 15", fecha: "2017", category: "fotografia" },
+      { imagen: foto16, titulo: "Fotografía 16", fecha: "2017", category: "fotografia" },
+      { imagen: foto17, titulo: "Fotografía 17", fecha: "2017", category: "fotografia" },
+      { imagen: foto18, titulo: "Fotografía 18", fecha: "2017", category: "fotografia" },
+      { imagen: foto19, titulo: "Fotografía 19", fecha: "2017", category: "fotografia" },
+      { imagen: foto20, titulo: "Fotografía 20", fecha: "2017", category: "fotografia" },
+      { imagen: foto21, titulo: "Fotografía 21", fecha: "2017", category: "fotografia" },
+      { imagen: foto22, titulo: "Fotografía 22", fecha: "2017", category: "fotografia" },
+      { imagen: foto23, titulo: "Fotografía 23", fecha: "2017", category: "fotografia" },
+      { imagen: foto24, titulo: "Fotografía 24", fecha: "2017", category: "fotografia" },
+      { imagen: foto25, titulo: "Fotografía 25", fecha: "2017", category: "fotografia" },
+      { imagen: foto26, titulo: "Fotografía 26", fecha: "2017", category: "fotografia" },
+      { imagen: foto27, titulo: "Fotografía 27", fecha: "2017", category: "fotografia" },
+      { imagen: foto28, titulo: "Fotografía 28", fecha: "2017", category: "fotografia" },
+      { imagen: foto29, titulo: "Fotografía 29", fecha: "2017", category: "fotografia" },
+      { imagen: foto30, titulo: "Fotografía 30", fecha: "2017", category: "fotografia" },
+      { imagen: foto31, titulo: "Fotografía 31", fecha: "2017", category: "fotografia" },
+      { imagen: foto32, titulo: "Fotografía 32", fecha: "2017", category: "fotografia" },
+      { imagen: foto34, titulo: "Fotografía 34", fecha: "2017", category: "fotografia" },
+      // { imagen: foto35, titulo: "Fotografía 35", fecha: "2017" },
+      // { imagen: foto36, titulo: "Fotografía 36", fecha: "2017" },
+    
+      // B. FOTOGRAFÍAS (fotos##)
+      { imagen: fotos01, titulo: "Fotografía S01", fecha: "2017", category: "fotografia" },
+      { imagen: fotos02, titulo: "Fotografía S02", fecha: "2017", category: "fotografia" },
+      { imagen: fotos03, titulo: "Fotografía S03", fecha: "2017", category: "fotografia" },
+      { imagen: fotos04, titulo: "Fotografía S04", fecha: "2017", category: "fotografia" },
+      { imagen: fotos05, titulo: "Fotografía S05", fecha: "2017", category: "fotografia" },
+      { imagen: fotos31, titulo: "Fotografía S31", fecha: "2017", category: "fotografia" },
+      { imagen: fotos32, titulo: "Fotografía S32", fecha: "2017", category: "fotografia" },
+      { imagen: foto33, titulo: "Fotografía S33", fecha: "2017", category: "fotografia" },
+      { imagen: fotos34, titulo: "Fotografía S34", fecha: "2017", category: "fotografia" },
+      { imagen: fotos35, titulo: "Fotografía S35", fecha: "2017", category: "fotografia" },
+      { imagen: fotos36, titulo: "Fotografía S36", fecha: "2017", category: "fotografia" },
+    
+      // C. ESCUDOS
+      { imagen: escudo01, titulo: "En el taller", fecha: "2017", category: "escudo" },
+      { imagen: escudo02, titulo: "Presentación de Escudos", fecha: "2017", category: "escudo" },
+      { imagen: escudo03, titulo: "Autoretrato con Escutum I", fecha: "2017", category: "escudo" },
+      { imagen: escudo04, titulo: "Escudos Vista", fecha: "2017", category: "escudo" },
+      { imagen: escudo05, titulo: "Escutum I", fecha: "2017", category: "escudo" },
+      { imagen: escudo06, titulo: "Scutum II", fecha: "2017", category: "escudo" },
+      { imagen: escudo07, titulo: "Scutum III", fecha: "2017", category: "escudo" },
+      { imagen: escudo08, titulo: "HUGO Scutum IV", fecha: "2017", category: "escudo" },
+      { imagen: escudo09, titulo: "Cartel Hugo von Lancelot", fecha: "2017", category: "escudo" },
+      { imagen: escudo10, titulo: "Scutum V Versus", fecha: "2017", category: "escudo" },
+      { imagen: escudo11, titulo: "Scutum V Reversus1", fecha: "2017", category: "escudo" },
+      { imagen: escudo12, titulo: "Scutum VI Versus", fecha: "2017", category: "escudo" },
+      { imagen: escudo13, titulo: "Scutum VI Reversus", fecha: "2017", category: "escudo" },
+    
+      // D. FOTOS DE DISTINTAS EXPOSICIONES
+      { imagen: exp01HDO01, titulo: "Exposición 01 HDO (01)", fecha: "2017", category: "exposicion" },
+      { imagen: exp02YARAT01, titulo: "Exposición 02 YARAT (01)", fecha: "2017", category: "exposicion" },
+      { imagen: exp02YARAT02, titulo: "Exposición 02 YARAT (02)", fecha: "2017", category: "exposicion" },
+      { imagen: exp03MUGAM01, titulo: "Exposición 03 MUGAM (01)", fecha: "2017", category: "exposicion" },
+      { imagen: exp03MUGAM02, titulo: "Exposición 03 MUGAM (02)", fecha: "2017", category: "exposicion" },
+      { imagen: exp04HJK02, titulo: "Exposición 04 HJK (02)", fecha: "2017", category: "exposicion" },
+      { imagen: exp04HJK03, titulo: "Exposición 04 HJK (03)", fecha: "2017", category: "exposicion" },
+      { imagen: exp04HJK04, titulo: "Exposición 04 HJK (04)", fecha: "2017", category: "exposicion" },
+      { imagen: exp04HJK05, titulo: "Exposición 04 HJK (05)", fecha: "2017", category: "exposicion" },
+      {
+        imagen: exp04HJKCartel01,
+        titulo: "Exposición 04 HJK (Cartel 01)",
+        fecha: "2017",
+        category: "exposicion",
+      },
+    ],
+    
+  },  
   {
     name: "De la Alhambra al Shirvanshah",
     slug: "alhambra-shirvanshah",
-    date: "",
+    date: "2020",
     description:
-      "Proyecto artístico-antropológico que une las culturas ibérica y azerí a través de música, pintura y escultura.",
-    obras: [{ titulo: "Alhambra", fecha: "2023" }],
-  },
-];
+      "Capítulo dentro de Centinelas que se inició en 2020 a raíz de la colaboración con la pianista Ulviyya Abdullayeva, proponiendo una fusión estética entre tradiciones azerí y española.",
+    descriptionLong: [
+      // --- Texto principal ---
+      `Es un capítulo dentro de Centinelas que se inició en el 2020 a raíz de la incorporación de la pianista Ulviyya Abdullayeva en mi trabajo y de la persona en mi vida. Siguiendo con la figura del guerrero histórico, y del centinela como emblema, proponemos una fusión estética entre nuestras respectivas tradiciones: la azerí y la española.
+  
+  La Alhambra de Granada y la fortaleza de Shirvanshah en Bakú serán, inicialmente, los dos emblemas escogidos de sendas culturas. En definitiva, los dos “centinelas” o guardianes custodios de la tradición, situados en los extremos de un puente cultural que recorre la plataforma mediterránea y caucásica; las cuales, con referencias a la legendaria ruta de la seda operan en dominio de la tradición grecolatina, con la península ibérica como extremo atlántico y las costas de Azerbaiyan como puerta al extremo Oriente.
+  
+  Mediante exposiciones y conciertos materializamos un programa musical con partituras de compositores tanto españoles como azerbaiyanos, clásicos y contemporáneos; junto a ello, una serie de piezas pictórico/escultóricas compuestas según los patrones simbólicos y ornamentales de la Alhambra y de las alfombras de la tradición azerí. 
+  No se trata ni de ambientar exposiciones con música como tampoco de ilustrar conciertos; mas bien, generar un material resultante de fusión de diferentes lenguajes artísticos.
+  
+  El proyecto está actualmente en su curso; si bien ya se han realizado un par de conciertos con obra proyectada en la ciudad de Bakú, mas un concierto en Múnich. Un material que va enriqueciendo el desarrollo del proyecto. Próximamente, en junio del 2025 viajaré junto con Ulviyya a Bakú, con la intención de extraer de primera mano los materiales necesarios, que sumados a todo el contenido tanto gráfico como textual y musical me servirán para iniciarla serie de cuadros-alfombras que constituirá el material expositivo de dicho proyecto.`,
+  
+      // --- Sección "La Escalera de san Juan" ---
+      `La Escalera de san Juan (2023) es una obra que supuso la apertura, tanto estética y conceptual como espiritual, para sentirme en condiciones de afrontar un capítulo ambicioso y complicado; en el intento de fusionar dos culturas milenarias a través de una propuesta artística. Se trata de una instalación inspirada en el poema "Noche oscura" del místico Juan de la Cruz que vincula al ser humano (centinela) con su condición de vulnerabilidad. Esta supone una pieza clave que marcó la conclusión de la serie "escudos", y con el que se inició un periodo de reflexión y retrospección individual que duró un año, consumiendo una decena de cuadernos con dibujos y anotaciones en torno al análisis de la vida y obra del místico Juan de la Cruz (1542-1591).`,
+    ],
+    obras: [
+      // Aquí convertimos los dos enlaces en "obras" con propiedad video:
+      {
+        video: "https://www.youtube.com/watch?v=VL6mXz6QHqQ",
+        titulo: "Concierto en Bakú",
+        fecha: "2021",
+      },
+      {
+        video: "https://www.youtube.com/watch?v=32XnLmkLWeA&t=2532s",
+        titulo: "Concierto en Múnich",
+        fecha: "2022",
+      },
+      // El resto de obras (si tienes imágenes o más videos) vendrían aquí
+    ],
+  }
+  ];

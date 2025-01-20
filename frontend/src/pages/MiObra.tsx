@@ -1,23 +1,25 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from "react";
 import {
   Box,
   Heading,
-  Select,
   Image,
   Text,
   Flex,
   Icon,
   Link,
-} from '@chakra-ui/react';
-import { collections } from '../config/CollectionConfig';
-import ObraCard from '../components/ObraCard';
-import { FaArrowRight } from 'react-icons/fa';
-import headerImage from '../assets/nani.jpg';
-import { Link as RouterLink } from 'react-router-dom';
+  Button,
+} from "@chakra-ui/react";
+import { collections } from "../config/CollectionConfig";
+import ObraCard from "../components/ObraCard";
+import { FaArrowRight } from "react-icons/fa";
+import headerImage from "../assets/nani.jpg";
+import { Link as RouterLink } from "react-router-dom";
 
 const MiObra: React.FC = () => {
-  const [filtro, setFiltro] = useState<string>('');
-  const [hoveredCollection, setHoveredCollection] = useState<string | null>(null);
+  const [filtro, setFiltro] = useState<string>("");
+  const [hoveredCollection, setHoveredCollection] = useState<string | null>(
+    null
+  );
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -48,8 +50,7 @@ const MiObra: React.FC = () => {
     setIsDragging(false);
   };
 
-  const colecciones = collections.map((collection) => collection.name);
-
+  // Si quisieras filtrar colecciones por algo:
   const coleccionesFiltradas = filtro
     ? collections.filter((collection) => collection.name === filtro)
     : collections;
@@ -79,10 +80,10 @@ const MiObra: React.FC = () => {
         {/* Franja lateral o superior */}
         <Box
           position="absolute"
-          top={{ base: 0, lg: '0' }}
-          left={{ base: '0', lg: '0' }}
-          h={{ base: '5rem', lg: '100%' }}
-          w={{ base: '100%', lg: '7rem' }}
+          top={{ base: 0, lg: "0" }}
+          left={{ base: "0", lg: "0" }}
+          h={{ base: "5rem", lg: "100%" }}
+          w={{ base: "100%", lg: "7rem" }}
           bg="brand.primary"
           display="flex"
           justifyContent="center"
@@ -90,12 +91,12 @@ const MiObra: React.FC = () => {
           zIndex={2}
         >
           <Heading
-            fontSize={{ base: '1.5rem', lg: '2rem' }}
+            fontSize={{ base: "1.5rem", lg: "2rem" }}
             color="brand.accent2"
             textAlign="center"
             sx={{
-              writingMode: { base: 'horizontal-tb', lg: 'vertical-rl' },
-              transform: { base: 'none', lg: 'rotate(180deg)' },
+              writingMode: { base: "horizontal-tb", lg: "vertical-rl" },
+              transform: { base: "none", lg: "rotate(180deg)" },
             }}
           >
             Mi Obra
@@ -111,19 +112,19 @@ const MiObra: React.FC = () => {
           zIndex={3}
           w="90%"
           maxW="1150px"
-          direction={{ base: 'column', lg: 'row' }}
+          direction={{ base: "column", lg: "row" }}
           justify="space-between"
           align="center"
-          gap={{ base: '1rem', lg: '2rem' }}
+          gap={{ base: "1rem", lg: "2rem" }}
         >
-          {/* Tabla de colecciones */}
+          {/* Lista de colecciones */}
           <Flex
             direction="column"
             bg="rgba(0, 0, 0, 0.8)"
             borderRadius="md"
-            p={{ base: '1rem', lg: '2rem' }}
+            p={{ base: "1rem", lg: "2rem" }}
             gap="0rem"
-            maxW={{ base: '100%', lg: '60%' }}
+            minW={{ base: "100%", lg: "60%" }}
           >
             {collections.map((collection) => (
               <Flex
@@ -131,14 +132,18 @@ const MiObra: React.FC = () => {
                 align="center"
                 justify="space-between"
                 w="100%"
-                _hover={{ bg: 'rgba(255, 255, 255, 0.1)', cursor: 'pointer' }}
+                _hover={{ bg: "rgba(255, 255, 255, 0.1)", cursor: "pointer" }}
                 onMouseEnter={() => setHoveredCollection(collection.slug)}
                 onMouseLeave={() => setHoveredCollection(null)}
               >
                 <Link
                   as={RouterLink}
                   to={`/coleccion/${collection.slug}`}
-                  style={{ display: 'flex', alignItems: 'center', width: '100%' }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
                 >
                   <Text fontSize="lg" fontWeight="bold" color="white" mr={2}>
                     {collection.date}
@@ -149,7 +154,10 @@ const MiObra: React.FC = () => {
                     pr="2rem"
                     position="relative"
                     _hover={{
-                      '> .arrow-icon': { opacity: 1, transform: 'translateX(8px)' },
+                      "> .arrow-icon": {
+                        opacity: 1,
+                        transform: "translateX(8px)",
+                      },
                     }}
                   >
                     <Text fontSize="lg" color="white" mr={2}>
@@ -170,10 +178,10 @@ const MiObra: React.FC = () => {
             ))}
           </Flex>
 
-          {/* Imagen dinámica */}
+          {/* Imagen dinámica al pasar el ratón sobre una colección */}
           {hoveredCollection && (
             <Box
-              maxW={{ base: '0%', lg: '30%' }}
+              maxW={{ base: "0%", lg: "30%" }}
               transition="max-width 0.3s ease-in-out"
               display="block"
               boxShadow="lg"
@@ -181,7 +189,7 @@ const MiObra: React.FC = () => {
               <Image
                 src={
                   collections.find((col) => col.slug === hoveredCollection)?.obras[0]
-                    ?.imagen || '/path/to/placeholder-image.jpg'
+                    ?.imagen || "/path/to/placeholder-image.jpg"
                 }
                 alt="Vista previa de la colección"
                 borderRadius="md"
@@ -192,51 +200,87 @@ const MiObra: React.FC = () => {
       </Box>
 
       {/* Galería separada por colección */}
-      <Box px={{ base: '1rem', lg: '3rem' }} py="3rem">
-        {coleccionesFiltradas.map((collection) => (
-          <Box key={collection.name} mb="3rem">
-            <Heading as="h2" size="lg" mb="1rem">
-              {collection.name}
-            </Heading>
-            <Text mb="1rem">{collection.description}</Text>
-            <Flex
-              ref={sliderRef}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUpOrLeave}
-              onMouseLeave={handleMouseUpOrLeave}
-              overflowX="scroll"
-              cursor={isDragging ? 'grabbing' : 'grab'}
-              css={{
-                '&::-webkit-scrollbar': { display: 'none' },
-                '-ms-overflow-style': 'none',
-                'scrollbar-width': 'none',
-              }}
-              gap="1rem"
-              px="1rem"
-            >
-              {collection.obras.map((obra) => (
-                <Box
-                  key={obra.titulo}
-                  flex="0 0 auto"
-                  width={{ base: '80%', sm: '60%', md: '40%', lg: '22%' }}
-                >
-                  <ObraCard
-                    obra={{
-                      ...obra,
-                      collection: collection.name,
-                      imagen: obra.imagen || '/path/to/placeholder-image.jpg',
-                    }}
-                  />
-                </Box>
-              ))}
-              <Box flex="0 0 auto" width="1rem" />
-            </Flex>
-          </Box>
-        ))}
+      <Box pl={{ base: "1rem", lg: "3rem" }} py="3rem">
+        {coleccionesFiltradas.map((collection) => {
+          // Si es "centinelas", barajamos las obras
+          let obras = collection.obras;
+          if (collection.slug === "centinelas") {
+            obras = shuffleArray(obras);
+          }
+
+          return (
+            <Box key={collection.name} mb="3rem">
+              <Heading as="h2" size="lg" mb="1rem">
+                {collection.name}
+              </Heading>
+              <Text pr="1rem" mb="1rem">{collection.description}</Text>
+
+              {/* Slider horizontal (ajustado para no dejar hueco blanco) */}
+              <Flex
+                ref={sliderRef}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUpOrLeave}
+                onMouseLeave={handleMouseUpOrLeave}
+                display="inline-flex"
+                whiteSpace="nowrap"
+                flexWrap="nowrap"
+                overflowX="auto"
+                cursor={isDragging ? "grabbing" : "grab"}
+                css={{
+                  "&::-webkit-scrollbar": { display: "none" },
+                  "-ms-overflow-style": "none",
+                  scrollbarWidth: "none",
+                }}
+                // SIN gap ni box final para que la última imagen se corte sin hueco
+                // (o reduce el gap si quieres algo mínimo entre tarjetas)
+                px={0}
+              >
+                {obras.map((obra) => (
+                  <Box
+                    key={obra.titulo}
+                    display="inline-block"
+                    flexShrink={0}
+                    // Ajustar ancho relativo
+                    width={{ base: "80%", sm: "60%", md: "40%", lg: "22%" }}
+                    mr="1rem" // Un margen derecho muy pequeño, si quieres separarlas un poco
+                  >
+                    <ObraCard
+                      obra={{
+                        ...obra,
+                        collection: collection.name,
+                        // placeholder si no hay imagen
+                        imagen: obra.imagen || "/path/to/placeholder-image.jpg",
+                      }}
+                    />
+                  </Box>
+                ))}
+              </Flex>
+
+              {/* Botón para ver la colección */}
+              <Flex justify="flex-start" mt={4}>
+                <Link as={RouterLink} to={`/coleccion/${collection.slug}`}>
+                  <Button colorScheme="teal" variant="solid">
+                    Ver Colección
+                  </Button>
+                </Link>
+              </Flex>
+            </Box>
+          );
+        })}
       </Box>
     </Box>
   );
 };
 
 export default MiObra;
+
+/** Función para "barajar" un array al estilo Fisher-Yates */
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
