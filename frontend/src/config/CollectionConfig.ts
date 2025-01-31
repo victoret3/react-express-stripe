@@ -1069,16 +1069,19 @@ export const collections: Collection[] = [
       `La Escalera de san Juan (2023) es una obra que supuso la apertura, tanto estética y conceptual como espiritual, para sentirme en condiciones de afrontar un capítulo ambicioso y complicado; en el intento de fusionar dos culturas milenarias a través de una propuesta artística. Se trata de una instalación inspirada en el poema "Noche oscura" del místico Juan de la Cruz que vincula al ser humano (centinela) con su condición de vulnerabilidad. Esta supone una pieza clave que marcó la conclusión de la serie "escudos", y con el que se inició un periodo de reflexión y retrospección individual que duró un año, consumiendo una decena de cuadernos con dibujos y anotaciones en torno al análisis de la vida y obra del místico Juan de la Cruz (1542-1591).`,
     ],
     obras: [
-      // Aquí convertimos los dos enlaces en "obras" con propiedad video:
       {
-        video: "https://www.youtube.com/watch?v=VL6mXz6QHqQ",
+        video: "https://www.youtube.com/embed/VL6mXz6QHqQ?si=MxGICDKEXZH2By_U",
         titulo: "Concierto en Bakú",
         fecha: "2021",
+        category: "video",
+
       },
       {
-        video: "https://www.youtube.com/watch?v=32XnLmkLWeA&t=2532s",
+        video: "https://www.youtube.com/embed/VL6mXz6QHqQ?si=MxGICDKEXZH2By_U",
         titulo: "Concierto en Múnich",
         fecha: "2022",
+        category: "video",
+
       },
       // El resto de obras (si tienes imágenes o más videos) vendrían aquí
     ],

@@ -38,16 +38,18 @@ const ObraCard: React.FC<{ obra: Obra }> = ({ obra }) => {
       _hover={{ transform: "scale(1.05)" }}
     >
       {obra.video ? (
-        /* Si hay VIDEO -> incrustamos un iframe YouTube */
+        // Si hay VIDEO -> incrustamos un iframe de YouTube
         <AspectRatio ratio={16 / 9}>
           <iframe
             src={`https://www.youtube.com/embed/${extraerYouTubeID(obra.video)}`}
             title={obra.titulo}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
           />
         </AspectRatio>
       ) : (
-        /* Si NO hay video, mostramos la IMAGEN */
+        // Si NO hay video, mostramos la IMAGEN
         <Image
           src={obra.imagen}
           alt={obra.titulo}

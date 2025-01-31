@@ -9,17 +9,16 @@ import {
   Link,
   Button,
 } from "@chakra-ui/react";
+import { FaArrowRight } from "react-icons/fa";
+import { Link as RouterLink } from "react-router-dom";
+
 import { collections } from "../config/CollectionConfig";
 import ObraCard from "../components/ObraCard";
-import { FaArrowRight } from "react-icons/fa";
 import headerImage from "../assets/nani.jpg";
-import { Link as RouterLink } from "react-router-dom";
 
 const MiObra: React.FC = () => {
   const [filtro, setFiltro] = useState<string>("");
-  const [hoveredCollection, setHoveredCollection] = useState<string | null>(
-    null
-  );
+  const [hoveredCollection, setHoveredCollection] = useState<string | null>(null);
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -50,7 +49,7 @@ const MiObra: React.FC = () => {
     setIsDragging(false);
   };
 
-  // Si quisieras filtrar colecciones por algo:
+  // Filtrar colecciones si fuera necesario (usando el estado 'filtro')
   const coleccionesFiltradas = filtro
     ? collections.filter((collection) => collection.name === filtro)
     : collections;
@@ -213,9 +212,11 @@ const MiObra: React.FC = () => {
               <Heading as="h2" size="lg" mb="1rem">
                 {collection.name}
               </Heading>
-              <Text pr="1rem" mb="1rem">{collection.description}</Text>
+              <Text pr="1rem" mb="1rem">
+                {collection.description}
+              </Text>
 
-              {/* Slider horizontal (ajustado para no dejar hueco blanco) */}
+              {/* Slider horizontal */}
               <Flex
                 ref={sliderRef}
                 onMouseDown={handleMouseDown}
@@ -229,27 +230,23 @@ const MiObra: React.FC = () => {
                 cursor={isDragging ? "grabbing" : "grab"}
                 css={{
                   "&::-webkit-scrollbar": { display: "none" },
-                  "-ms-overflow-style": "none",
+                  msOverflowStyle: "none",   // Corregido (camelCase o string)
                   scrollbarWidth: "none",
                 }}
-                // SIN gap ni box final para que la última imagen se corte sin hueco
-                // (o reduce el gap si quieres algo mínimo entre tarjetas)
                 px={0}
               >
-                {obras.map((obra) => (
+                {obras.map((obra, index) => (
                   <Box
-                    key={obra.titulo}
+                    key={`${obra.titulo}-${index}`} // Corregido para evitar claves duplicadas
                     display="inline-block"
                     flexShrink={0}
-                    // Ajustar ancho relativo
                     width={{ base: "80%", sm: "60%", md: "40%", lg: "22%" }}
-                    mr="1rem" // Un margen derecho muy pequeño, si quieres separarlas un poco
+                    mr="1rem"
                   >
                     <ObraCard
                       obra={{
                         ...obra,
                         collection: collection.name,
-                        // placeholder si no hay imagen
                         imagen: obra.imagen || "/path/to/placeholder-image.jpg",
                       }}
                     />

@@ -13,7 +13,9 @@ import {
 } from "@chakra-ui/react";
 import { collections } from "../config/CollectionConfig";
 
-// Interfaces mínimas (ajusta según tu proyecto)
+// -----------------------------------------------------
+// Tipos de datos básicos, ajusta si tu proyecto difiere
+// -----------------------------------------------------
 interface Obra {
   imagen?: string;
   video?: string;
@@ -31,12 +33,17 @@ interface Collection {
   obras: Obra[];
 }
 
-/* Helper para extraer ID de youtube y usarlo en embed */
+// -----------------------------------------------------
+// Extraer ID de YouTube de una URL
+// -----------------------------------------------------
 function extraerID(url: string): string {
   const match = url.match(/(\?v=|\.be\/)([^#&?]+)/);
   return match ? match[2] : url;
 }
 
+// -----------------------------------------------------
+// Página principal que decide qué layout usar
+// -----------------------------------------------------
 const CollectionPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const collection = collections.find((col) => col.slug === slug);
@@ -50,31 +57,31 @@ const CollectionPage: React.FC = () => {
     );
   }
 
-  // Solo para "centinelas", usamos un layout con secciones (Video, Mapas, etc.)
+  // Si la colección es "centinelas", usamos layout específico.
   if (collection.slug === "centinelas") {
     return <CentinelasLayout collection={collection} />;
   }
 
-  // El resto de colecciones usa el layout genérico:
+  // Para el resto, un layout genérico
   return <DefaultLayout collection={collection} />;
 };
 
 export default CollectionPage;
 
-/* -------------------------------------------------------------------------- */
-/* ---------------------- LAYOUT GENÉRICO (NO CENTINELAS) -------------------- */
-/* -------------------------------------------------------------------------- */
+// -----------------------------------------------------
+// LAYOUT GENÉRICO (NO "centinelas")
+// -----------------------------------------------------
 function DefaultLayout({ collection }: { collection: Collection }) {
   const navigate = useNavigate();
 
   return (
     <Container maxW="7xl" py={10}>
-      {/* BOTÓN DE VOLVER */}
+      {/* Botón de Volver */}
       <Button onClick={() => navigate(-1)} colorScheme="teal" mb={6}>
         Volver
       </Button>
 
-      {/* TÍTULO + FECHA */}
+      {/* Título + Fecha */}
       <Heading fontSize="3xl" mb={2}>
         {collection.name}
       </Heading>
@@ -82,7 +89,7 @@ function DefaultLayout({ collection }: { collection: Collection }) {
         {collection.date}
       </Text>
 
-      {/* DESCRIPCIÓN LARGA */}
+      {/* Descripción larga (puede ser string o string[]) */}
       {Array.isArray(collection.descriptionLong) ? (
         collection.descriptionLong.map((paragraph, i) => (
           <Text key={i} mt={i > 0 ? 4 : 0} fontSize="md" color="gray.700">
@@ -95,40 +102,43 @@ function DefaultLayout({ collection }: { collection: Collection }) {
         </Text>
       )}
 
-      {/* GALERÍA (SIN FILTRO DE CATEGORY) */}
+      {/* Galería sin filtrar categorías */}
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8} mt={8}>
         {collection.obras.map((obra, index) => (
           <CardItem key={index} obra={obra} />
         ))}
       </SimpleGrid>
 
-      {/* OTRAS COLECCIONES */}
+      {/* Otras colecciones al final */}
       <OtherCollections currentSlug={collection.slug} />
     </Container>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* ------------- LAYOUT ESPECÍFICO PARA CENTINELAS (CON SECCIONES) ---------- */
-/* -------------------------------------------------------------------------- */
+// -----------------------------------------------------
+// LAYOUT ESPECÍFICO PARA "centinelas"
+// (divide obras por categoría)
+// -----------------------------------------------------
 function CentinelasLayout({ collection }: { collection: Collection }) {
   const navigate = useNavigate();
 
-  // Filtrar categorías
+  // Agrupar por categoría
   const obrasVideo = collection.obras.filter((o) => o.category === "video");
   const obrasMapas = collection.obras.filter((o) => o.category === "mapa");
   const obrasFotos = collection.obras.filter((o) => o.category === "fotografia");
   const obrasEscudos = collection.obras.filter((o) => o.category === "escudo");
-  const obrasExpos = collection.obras.filter((o) => o.category === "exposicion");
+  const obrasExpos = collection.obras.filter(
+    (o) => o.category === "exposicion"
+  );
 
   return (
     <Container maxW="7xl" py={10}>
-      {/* BOTÓN DE VOLVER */}
+      {/* Botón de Volver */}
       <Button onClick={() => navigate(-1)} colorScheme="teal" mb={6}>
         Volver
       </Button>
 
-      {/* TÍTULO + FECHA */}
+      {/* Título + Fecha */}
       <Heading fontSize="3xl" mb={2}>
         {collection.name}
       </Heading>
@@ -136,7 +146,7 @@ function CentinelasLayout({ collection }: { collection: Collection }) {
         {collection.date}
       </Text>
 
-      {/* DESCRIPCIÓN LARGA */}
+      {/* Descripción larga */}
       {Array.isArray(collection.descriptionLong) ? (
         collection.descriptionLong.map((paragraph, i) => (
           <Text key={i} mt={i > 0 ? 4 : 0} fontSize="md" color="gray.700">
@@ -149,7 +159,7 @@ function CentinelasLayout({ collection }: { collection: Collection }) {
         </Text>
       )}
 
-      {/* SECCIONES SEGÚN CATEGORÍA */}
+      {/* Sección de videos (si los hay) */}
       {obrasVideo.length > 0 && (
         <Box mt={8}>
           <Heading fontSize="xl" mb={4} color="teal.600">
@@ -169,6 +179,7 @@ function CentinelasLayout({ collection }: { collection: Collection }) {
         </Box>
       )}
 
+      {/* Sección de mapas */}
       {obrasMapas.length > 0 && (
         <Box mt={8}>
           <Heading fontSize="xl" mb={4} color="teal.600">
@@ -182,6 +193,7 @@ function CentinelasLayout({ collection }: { collection: Collection }) {
         </Box>
       )}
 
+      {/* Fotografías */}
       {obrasFotos.length > 0 && (
         <Box mt={8}>
           <Heading fontSize="xl" mb={4} color="teal.600">
@@ -195,6 +207,7 @@ function CentinelasLayout({ collection }: { collection: Collection }) {
         </Box>
       )}
 
+      {/* Escudos */}
       {obrasEscudos.length > 0 && (
         <Box mt={8}>
           <Heading fontSize="xl" mb={4} color="teal.600">
@@ -208,6 +221,7 @@ function CentinelasLayout({ collection }: { collection: Collection }) {
         </Box>
       )}
 
+      {/* Exposiciones */}
       {obrasExpos.length > 0 && (
         <Box mt={8}>
           <Heading fontSize="xl" mb={4} color="teal.600">
@@ -221,15 +235,15 @@ function CentinelasLayout({ collection }: { collection: Collection }) {
         </Box>
       )}
 
-      {/* OTRAS COLECCIONES ABAJO */}
+      {/* Otras colecciones abajo */}
       <OtherCollections currentSlug={collection.slug} />
     </Container>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* ------ Un componente "CardItem" para IMAGEN o VÍDEO en forma de tarjeta -- */
-/* -------------------------------------------------------------------------- */
+// -----------------------------------------------------
+// CardItem: Tarjeta para mostrar una "Obra" con imagen
+// -----------------------------------------------------
 function CardItem({ obra }: { obra: Obra }) {
   return (
     <Box
@@ -240,9 +254,8 @@ function CardItem({ obra }: { obra: Obra }) {
       transition="transform 0.2s"
       _hover={{ transform: "scale(1.02)" }}
     >
-      {/* Si tiene video se lo mostrarías de otra forma, 
-          pero en este ejemplo lo ignoramos para no liar: 
-          ya lo estamos filtrando en "CentinelasLayout" */}
+      {/* Si hubiera video, lo mostrarías distinto. 
+          Aquí solo mostramos la imagen. */}
       {obra.imagen && (
         <Image
           src={obra.imagen}
@@ -252,6 +265,7 @@ function CardItem({ obra }: { obra: Obra }) {
           objectFit="cover"
         />
       )}
+
       <Box p={4}>
         <Heading fontSize="md" noOfLines={1} mb={1}>
           {obra.titulo}
@@ -264,13 +278,11 @@ function CardItem({ obra }: { obra: Obra }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* ------ Grid de "Otras Colecciones" para enlazar al final de la página ---- */
-/* -------------------------------------------------------------------------- */
+// -----------------------------------------------------
+// "Otras Colecciones" para enlazar al final
+// -----------------------------------------------------
 function OtherCollections({ currentSlug }: { currentSlug: string }) {
-  const otherCollections = collections.filter(
-    (c) => c.slug !== currentSlug
-  );
+  const otherCollections = collections.filter((c) => c.slug !== currentSlug);
 
   if (otherCollections.length === 0) return null;
 
@@ -281,7 +293,7 @@ function OtherCollections({ currentSlug }: { currentSlug: string }) {
       </Heading>
       <SimpleGrid columns={{ base: 2, md: 3, lg: 4 }} spacing={6}>
         {otherCollections.map((col) => {
-          const previewImage = col.obras[0]?.imagen; // primera imagen
+          const previewImage = col.obras[0]?.imagen; // Toma la primera imagen como preview
           return (
             <Link key={col.slug} to={`/coleccion/${col.slug}`}>
               <Box
