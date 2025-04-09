@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  
   "scripts": {
     "start": "babel-node src/index.js",
-    "dev": "nodemon --exec babel-node src/index.js",
+    "dev": "nodemon --exec babel-node devServer.js",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "keywords": [],
@@ -15,6 +16,7 @@
     "@babel/node": "^7.26.0",
     "cors": "^2.8.5",
     "csv-parser": "^3.0.0",
+    "dotenv": "^16.4.7",
     "express": "^4.17.1",
     "mongoose": "^8.8.4",
     "stripe": "^17.4.0"

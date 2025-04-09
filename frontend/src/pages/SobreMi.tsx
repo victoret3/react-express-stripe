@@ -84,15 +84,16 @@ const SobreMi: React.FC = () => {
         {/* Franja lateral o superior */}
         <Box
           position="absolute"
-          top={{ base: 0, lg: "0" }}
+          top={{ base: "0rem", md: "0" }}
+          
           left={{ base: "0", lg: "0" }}
-          h={{ base: "5rem", lg: "100%" }}
+          h={{ base: "4rem", lg: "100%" }}
           w={{ base: "100%", lg: "7rem" }}
           bg="brand.accent2"
-          zIndex={2}
           display="flex"
           justifyContent="center"
           alignItems="center"
+          zIndex={2}
         >
           <Heading
             fontSize={{ base: "1.5rem", lg: "2rem" }}

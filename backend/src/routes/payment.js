@@ -1,98 +1,107 @@
 import Stripe from 'stripe';
+import Product from '../models/Product.js'; // Ajusta la ruta si difiere
+import express from 'express';
 
 const paymentApi = (app) => {
-  app.get('/', (req, res) => {
+  // Endpoint de prueba
+  app.get('/api/payment', (req, res) => {
     res.send({
-      message: 'Ping from Checkout Server',
+      message: 'Ping desde Checkout Server',
       timestamp: new Date().toISOString(),
       env: process.env.NODE_ENV,
     });
   });
 
-  app.post('/payment/session-initiate', async (req, res) => {
-    const { lineItems, successUrl, cancelUrl, name, email } = req.body; // El teléfono será solicitado por Stripe
-
-    const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
-
+  // Iniciar checkout
+  app.post('/api/payment/session-initiate', async (req, res) => {
+    const { lineItems, successUrl, cancelUrl, name, email } = req.body;
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  
     try {
+      console.log('Line items from client:', JSON.stringify(lineItems, null, 2));
+  
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
-        line_items: lineItems,
+        line_items: lineItems, // <-- Importante: se pasa tal cual
         mode: 'payment',
         success_url: successUrl,
         cancel_url: cancelUrl,
-        customer_email: email, // Email para asociar el cliente
-        billing_address_collection: 'required', // Recolectar datos de facturación
+        customer_email: email,
+        billing_address_collection: 'required',
         shipping_address_collection: {
-          allowed_countries: ['ES', 'AD', 'FR'], // Países permitidos
+          allowed_countries: ['ES', 'AD', 'FR'],
         },
-        phone_number_collection: {
-          enabled: true, // Habilitar la recolección del número de teléfono
-        },
-        metadata: {
-          name, // Pasa el nombre como metadata
-        },
+        phone_number_collection: { enabled: true },
+        metadata: { name },
       });
-
-      res.status(200).send(session);
+  
+      return res.status(200).send(session);
     } catch (error) {
-      console.error('Error creando sesión de Stripe:', error);
-      res.status(500).send({ error: error.message });
+      console.error('Error creando la sesión de Stripe:', error);
+      return res.status(500).send({ error: error.message });
     }
   });
 
-  app.post('/payment/session-complete', async (req, res) => {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2020-08-27' });
-
-    let event;
-
-    try {
-      event = stripe.webhooks.constructEvent(
-        req.rawBody,
-        req.headers['stripe-signature'],
-        process.env.STRIPE_WEBHOOK_SECRET
-      );
-    } catch (error) {
-      console.error('Webhook Error:', error.message);
-      return res.status(400).send(`Webhook Error: ${error.message}`);
-    }
-
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-
-      console.log('✔️ Evento recibido: checkout.session.completed');
-      console.log('Detalles de la sesión:', JSON.stringify(session, null, 2));
+  // Webhook de Stripe (cuando finaliza la compra)
+  app.post('/api/payment/session-complete',
+    express.raw({ type: 'application/json' }),
+    async (req, res) => {
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2020-08-27' });
+      let event;
 
       try {
-        const { customer_details, metadata, shipping_details } = session;
-
-        // Capturamos el nombre desde varias fuentes posibles
-        const name =
-          metadata?.name || // Nombre pasado como metadata
-          customer_details?.name || // Nombre del cliente
-          shipping_details?.name || // Nombre del envío
-          'Nombre no proporcionado';
-
-        const phone = customer_details?.phone || 'Teléfono no proporcionado';
-
-        console.log(`✔️ Detalles del cliente:
-        Nombre: ${name},
-        Email: ${customer_details?.email},
-        Teléfono: ${phone},
-        Dirección: ${shipping_details?.address?.line1},
-        Ciudad: ${shipping_details?.address?.city},
-        Código Postal: ${shipping_details?.address?.postal_code},
-        País: ${shipping_details?.address?.country}`);
+        event = stripe.webhooks.constructEvent(
+          req.rawBody,
+          req.headers['stripe-signature'],
+          process.env.STRIPE_WEBHOOK_SECRET
+        );
       } catch (error) {
-        console.error('❌ Error procesando la información del cliente:', error.message);
+        console.error('Webhook Error:', error.message);
+        return res.status(400).send(`Webhook Error: ${error.message}`);
       }
 
-      res.status(200).send({ received: true });
-    } else {
-      console.log(`Evento no manejado: ${event.type}`);
-      res.status(200).send({ received: true });
+      console.log('Stripe event received:', event); // Añadir console.log para ver lo que Stripe devuelve
+
+      if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+        console.log('✔️  checkout.session.completed recibido');
+        try {
+          // Obtener line items
+          const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+            expand: ['data.price.product'],
+          });
+
+          // Actualizar stock de cada producto
+          for (const item of lineItems.data) {
+            const productId = item.price?.product?.metadata?.productId;
+            if (productId) {
+              await Product.findByIdAndUpdate(
+                productId,
+                { $inc: { stock: -item.quantity } },
+                { new: true }
+              );
+            }
+          }
+
+          // Opcional: revisar datos del cliente
+          const { customer_details, metadata, shipping_details } = session;
+          const name =
+            metadata?.name ||
+            customer_details?.name ||
+            shipping_details?.name ||
+            'Nombre no proporcionado';
+          console.log('Cliente:', name);
+        } catch (error) {
+          console.error('Error procesando webhook Stripe:', error.message);
+        }
+
+        return res.status(200).send({ received: true });
+      } else {
+        console.log(`Evento no manejado: ${event.type}`);
+        return res.status(200).send({ received: true });
+      }
     }
-  });
+  );
 
   return app;
 };

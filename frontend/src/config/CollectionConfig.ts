@@ -394,7 +394,42 @@ import mapa08 from "../assets/Obras/Centinelas/Mapas/mapas08.jpg";
 import mapa09 from "../assets/Obras/Centinelas/Mapas/mapas09.jpg";
 import mapa10 from "../assets/Obras/Centinelas/Mapas/mapas10.jpg";
 import mapa11 from "../assets/Obras/Centinelas/Mapas/mapas11.jpg";
-
+import image1 from "../assets/Obras/Alhambra/03.jpg"
+import image2 from "../assets/Obras/Alhambra/04.jpg"  
+import image3 from "../assets/Obras/Alhambra/05.jpg"
+import image4 from "../assets/Obras/Alhambra/dlaas01.jpg" 
+import image5 from "../assets/Obras/Alhambra/dlaas03.jpg"
+import image6 from "../assets/Obras/Alhambra/dlaas04.jpg"
+import v00 from "../assets/Obras/Vogeland/vl01-1.jpg";
+import v01 from "../assets/Obras/Vogeland/vl01.jpg";
+import v02 from "../assets/Obras/Vogeland/vl02.jpg";
+import v03 from "../assets/Obras/Vogeland/vl03.jpg";
+import v04 from "../assets/Obras/Vogeland/vl04.jpg";
+import v05 from "../assets/Obras/Vogeland/vl05.jpg";
+import v06 from "../assets/Obras/Vogeland/vl06.jpg";
+import v07 from "../assets/Obras/Vogeland/vl07.jpg";
+import v08 from "../assets/Obras/Vogeland/vl08.jpg";
+import v09 from "../assets/Obras/Vogeland/vl09.jpg";
+import v10 from "../assets/Obras/Vogeland/vl10.jpg";
+import v11 from "../assets/Obras/Vogeland/vl11.jpg";
+import v12 from "../assets/Obras/Vogeland/vl12.jpg";
+import v13 from "../assets/Obras/Vogeland/vl13.jpg";
+import v14 from "../assets/Obras/Vogeland/vl14.jpg";
+import v15 from "../assets/Obras/Vogeland/vl15.jpg";
+import v16 from "../assets/Obras/Vogeland/vl16.jpg";
+import v17 from "../assets/Obras/Vogeland/vl17.jpg";
+import v18 from "../assets/Obras/Vogeland/vl18.jpg";
+import v19 from "../assets/Obras/Vogeland/vl19.jpg";
+import v20 from "../assets/Obras/Vogeland/vl20.jpg";
+import v21 from "../assets/Obras/Vogeland/vl21.jpg";
+import v22 from "../assets/Obras/Vogeland/vl22.jpg";
+import v23 from "../assets/Obras/Vogeland/vl23.jpg";
+import v24 from "../assets/Obras/Vogeland/vl24.jpg";
+import v25 from "../assets/Obras/Vogeland/vl25.jpg";
+import v26 from "../assets/Obras/Vogeland/vl26.jpg";
+import v27 from "../assets/Obras/Vogeland/vl27.jpg";
+import v28 from "../assets/Obras/Vogeland/vl28.jpg";
+import v29 from "../assets/Obras/Vogeland/vl29.jpg";
 
 interface Obra {
   imagen?: string;
@@ -836,6 +871,49 @@ export const collections: Collection[] = [
     ],
   },
   {
+    name: "Vögeland",
+    slug: "vogeland",
+    date: "2009",
+    description:
+      "Serie inspirada en la enigmática conexión entre la tierra y el mundo de las aves, explorando la magia de volar y la poesía oculta en cada pluma.",
+    descriptionLong: [
+      "Tras un viaje onírico por distintos hábitats, Boronat se sumerge en la observación de bandadas y el simbolismo que evocan. El proyecto Vögeland (país de las aves) surge como una metáfora de la libertad, de la búsqueda de la altura y de ese punto de vista que solo se logra alzándose sobre las corrientes de aire.",
+      "Aquí las paletas de color se vuelven más etéreas, con pinceladas ligeras que evocan el susurro de las alas. Vögeland es un canto a la naturaleza y a la migración constante, un recordatorio de que todos somos peregrinos que alzamos el vuelo en algún momento de la vida."
+    ],
+    obras: [
+      { imagen: v00, titulo: "Vögeland 00", fecha: "2009" },
+      { imagen: v01, titulo: "Vögeland 01", fecha: "2009" },
+      { imagen: v02, titulo: "Vögeland 02", fecha: "2009" },
+      { imagen: v03, titulo: "Vögeland 03", fecha: "2009" },
+      { imagen: v04, titulo: "Vögeland 04", fecha: "2009" },
+      { imagen: v05, titulo: "Vögeland 05", fecha: "2009" },
+      { imagen: v06, titulo: "Vögeland 06", fecha: "2009" },
+      { imagen: v07, titulo: "Vögeland 07", fecha: "2009" },
+      { imagen: v08, titulo: "Vögeland 08", fecha: "2009" },
+      { imagen: v09, titulo: "Vögeland 09", fecha: "2009" },
+      { imagen: v10, titulo: "Vögeland 10", fecha: "2009" },
+      { imagen: v11, titulo: "Vögeland 11", fecha: "2009" },
+      { imagen: v12, titulo: "Vögeland 12", fecha: "2009" },
+      { imagen: v13, titulo: "Vögeland 13", fecha: "2009" },
+      { imagen: v14, titulo: "Vögeland 14", fecha: "2009" },
+      { imagen: v15, titulo: "Vögeland 15", fecha: "2009" },
+      { imagen: v16, titulo: "Vögeland 16", fecha: "2009" },
+      { imagen: v17, titulo: "Vögeland 17", fecha: "2009" },
+      { imagen: v18, titulo: "Vögeland 18", fecha: "2009" },
+      { imagen: v19, titulo: "Vögeland 19", fecha: "2009" },
+      { imagen: v20, titulo: "Vögeland 20", fecha: "2009" },
+      { imagen: v21, titulo: "Vögeland 21", fecha: "2009" },
+      { imagen: v22, titulo: "Vögeland 22", fecha: "2009" },
+      { imagen: v23, titulo: "Vögeland 23", fecha: "2009" },
+      { imagen: v24, titulo: "Vögeland 24", fecha: "2009" },
+      { imagen: v25, titulo: "Vögeland 25", fecha: "2009" },
+      { imagen: v26, titulo: "Vögeland 26", fecha: "2009" },
+      { imagen: v27, titulo: "Vögeland 27", fecha: "2009" },
+      { imagen: v28, titulo: "Vögeland 28", fecha: "2009" },
+      { imagen: v29, titulo: "Vögeland 29", fecha: "2009" },
+    ],
+  },
+  {
     name: "En la palma de la mano",
     slug: "en-la-palma-de-la-mano",
     date: "2011",
@@ -1052,38 +1130,69 @@ export const collections: Collection[] = [
     name: "De la Alhambra al Shirvanshah",
     slug: "alhambra-shirvanshah",
     date: "2020",
-    description:
-      "Capítulo dentro de Centinelas que se inició en 2020 a raíz de la colaboración con la pianista Ulviyya Abdullayeva, proponiendo una fusión estética entre tradiciones azerí y española.",
+    description: "Capítulo dentro de Centinelas que se inició en 2020 a raíz de la colaboración con la pianista Ulviyya Abdullayeva...",
     descriptionLong: [
-      // --- Texto principal ---
-      `Es un capítulo dentro de Centinelas que se inició en el 2020 a raíz de la incorporación de la pianista Ulviyya Abdullayeva en mi trabajo y de la persona en mi vida. Siguiendo con la figura del guerrero histórico, y del centinela como emblema, proponemos una fusión estética entre nuestras respectivas tradiciones: la azerí y la española.
+      `Es un capítulo dentro de Centinelas que se inició en el 2020 a raíz de la incorporación de la pianista Ulviyya Abdullayeva en mi trabajo y de la persona en mi vida. Siguiendo con la figura del guerrero histórico, y del centinela como emblema, proponemos una fusión estética entre nuestras respectivas tradiciones: la azerí y la española.`,
   
-  La Alhambra de Granada y la fortaleza de Shirvanshah en Bakú serán, inicialmente, los dos emblemas escogidos de sendas culturas. En definitiva, los dos “centinelas” o guardianes custodios de la tradición, situados en los extremos de un puente cultural que recorre la plataforma mediterránea y caucásica; las cuales, con referencias a la legendaria ruta de la seda operan en dominio de la tradición grecolatina, con la península ibérica como extremo atlántico y las costas de Azerbaiyan como puerta al extremo Oriente.
+      `La Alhambra de Granada y la fortaleza de Shirvanshah en Bakú serán, inicialmente, los dos emblemas escogidos de sendas culturas. En definitiva, los dos “centinelas” o guardianes custodios de la tradición, situados en los extremos de un puente cultural que recorre la plataforma mediterránea y caucásica; las cuales, con referencias a la legendaria ruta de la seda operan en dominio de la tradición grecolatina, con la península ibérica como extremo atlántico y las costas de Azerbaiyán como puerta al extremo Oriente.`,
   
-  Mediante exposiciones y conciertos materializamos un programa musical con partituras de compositores tanto españoles como azerbaiyanos, clásicos y contemporáneos; junto a ello, una serie de piezas pictórico/escultóricas compuestas según los patrones simbólicos y ornamentales de la Alhambra y de las alfombras de la tradición azerí. 
-  No se trata ni de ambientar exposiciones con música como tampoco de ilustrar conciertos; mas bien, generar un material resultante de fusión de diferentes lenguajes artísticos.
+      `Mediante exposiciones y conciertos materializamos un programa musical con partituras de compositores tanto españoles como azerbaiyanos, clásicos y contemporáneos; junto a ello, una serie de piezas pictórico/escultóricas compuestas según los patrones simbólicos y ornamentales de la Alhambra y de las alfombras de la tradición azerí. No se trata ni de ambientar exposiciones con música como tampoco de ilustrar conciertos; más bien, generar un material resultante de fusión de diferentes lenguajes artísticos.`,
   
-  El proyecto está actualmente en su curso; si bien ya se han realizado un par de conciertos con obra proyectada en la ciudad de Bakú, mas un concierto en Múnich. Un material que va enriqueciendo el desarrollo del proyecto. Próximamente, en junio del 2025 viajaré junto con Ulviyya a Bakú, con la intención de extraer de primera mano los materiales necesarios, que sumados a todo el contenido tanto gráfico como textual y musical me servirán para iniciarla serie de cuadros-alfombras que constituirá el material expositivo de dicho proyecto.`,
+      `El proyecto está actualmente en curso. Ya se han realizado varios conciertos con obra proyectada en la ciudad de Bakú, más un concierto en Múnich. Un material que va enriqueciendo el desarrollo del proyecto. Próximamente, en junio de 2025, viajaremos a Bakú, con la intención de extraer de primera mano los materiales necesarios, que, sumados a todo el contenido tanto gráfico como textual y musical, servirán para iniciar la serie de cuadros-alfombras que constituirá el material expositivo de dicho proyecto.`,
   
-      // --- Sección "La Escalera de san Juan" ---
-      `La Escalera de san Juan (2023) es una obra que supuso la apertura, tanto estética y conceptual como espiritual, para sentirme en condiciones de afrontar un capítulo ambicioso y complicado; en el intento de fusionar dos culturas milenarias a través de una propuesta artística. Se trata de una instalación inspirada en el poema "Noche oscura" del místico Juan de la Cruz que vincula al ser humano (centinela) con su condición de vulnerabilidad. Esta supone una pieza clave que marcó la conclusión de la serie "escudos", y con el que se inició un periodo de reflexión y retrospección individual que duró un año, consumiendo una decena de cuadernos con dibujos y anotaciones en torno al análisis de la vida y obra del místico Juan de la Cruz (1542-1591).`,
+      `La Escalera de san Juan (2023) es una obra que supuso la apertura, tanto estética y conceptual como espiritual, para afrontar este capítulo ambicioso. Inspirada en el poema "Noche oscura" del místico Juan de la Cruz, vincula al ser humano (centinela) con su condición de vulnerabilidad. Concluye la serie "escudos" y marca un periodo de reflexión y retrospección individual que duró un año, consumiendo numerosos cuadernos con dibujos y anotaciones sobre la vida y obra del místico Juan de la Cruz (1542-1591).`,
     ],
     obras: [
       {
-        video: "https://www.youtube.com/embed/VL6mXz6QHqQ?si=MxGICDKEXZH2By_U",
+        video: "https://youtu.be/VL6mXz6QHqQ?si=u1kyM4pFHfOiHLXq",
         titulo: "Concierto en Bakú",
         fecha: "2021",
         category: "video",
-
       },
       {
-        video: "https://www.youtube.com/embed/VL6mXz6QHqQ?si=MxGICDKEXZH2By_U",
+        video: "https://youtu.be/32XnLmkLWeA?si=rTE_NiZx8aX35SQb",
         titulo: "Concierto en Múnich",
         fecha: "2022",
         category: "video",
-
       },
-      // El resto de obras (si tienes imágenes o más videos) vendrían aquí
+      // -- IMÁGENES (fotografías) AÑADIDAS --
+      {
+        imagen: image1,
+        titulo: "Umbral del Patio Nazarí",
+        fecha: "2020",
+        category: "fotografia",
+      },
+      {
+        imagen: image2,
+        titulo: "Sombras en el Mirador",
+        fecha: "2020",
+        category: "fotografia",
+      },
+      {
+        imagen: image3,
+        titulo: "Diálogo Oriental",
+        fecha: "2020",
+        category: "fotografia",
+      },
+      {
+        imagen: image4,
+        titulo: "Vestigios de Cenefas",
+        fecha: "2020",
+        category: "fotografia",
+      },
+      {
+        imagen: image5,
+        titulo: "Sonetos de Al-Andalus",
+        fecha: "2020",
+        category: "fotografia",
+      },
+      {
+        imagen: image6,
+        titulo: "Alfombras de Luz",
+        fecha: "2020",
+        category: "fotografia",
+      },
+   
     ],
-  }
+  },
   ];

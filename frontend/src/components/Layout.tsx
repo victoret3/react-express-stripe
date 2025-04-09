@@ -28,9 +28,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Image
               src={firmaImage}
               alt="Firma"
-              width={{ base: "3rem", sm: "3rem", md: "4rem" }}
-              transform="rotate(-90deg)"
-              mb="1rem"
+              mt="2rem"
+              width={{ base: "3rem", sm: "4rem", md: "6rem" }}
+              filter="invert(1) brightness(0.7)"
             />
           </RouterLink>
         </Box>

@@ -1,20 +1,16 @@
-import { useEffect } from "react";
-import { Box, Heading } from "@chakra-ui/react";
-import WalletConnectButton from "../components/ConnectWalletButton";
+import React from "react";
 
-const Dashboard = () => {
-  useEffect(() => {
-    console.log("Dashboard montado correctamente.");
-  }, []);
-
+const NFTCollection = () => {
   return (
-    <Box textAlign="center" py={10} px={6}>
-      <Heading as="h1" size="xl" mb={6}>
-        Bienvenido a mi colección
-      </Heading>
-      <WalletConnectButton />
-    </Box>
+    <div style={{ padding: 20, textAlign: "center" }}>
+      <h1>Próximamente: NFTs de Nani Boronat</h1>
+      <p>Esta sección está actualmente en desarrollo.</p>
+      <div style={{ margin: "20px auto", padding: 15, border: "1px solid #ccc", maxWidth: 400 }}>
+        <p><b>¡Muy pronto!</b></p>
+        <p>Estamos preparando una colección única de NFTs.</p>
+      </div>
+    </div>
   );
 };
 
-export default Dashboard;
+export default NFTCollection;

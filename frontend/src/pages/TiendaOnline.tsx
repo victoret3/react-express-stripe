@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, SimpleGrid, Image, Text, IconButton, Spinner, Badge, Heading } from '@chakra-ui/react';
+import { Box, SimpleGrid, Image, Text, IconButton, Spinner, Badge, Heading, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import axios from 'axios';
 import { useCart } from '../CartContext';
@@ -8,27 +8,35 @@ interface Product {
   _id: string;
   name: string;
   price: number;
-  description: string;
+  description?: string;
   image: string;
+  stock: number; // <-- Importante
 }
 
 const TiendaOnline: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { addToCart } = useCart();
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleImageClick = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+    onOpen();
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:8888/products');
+        const response = await axios.get('https://nani-boronat.vercel.app/api/products');
+        console.log('Productos devueltos:', response.data);
         setProducts(response.data);
-        setLoading(false);
       } catch (error) {
         console.error('Error al obtener productos:', error);
+      } finally {
         setLoading(false);
       }
     };
-
     fetchProducts();
   }, []);
 
@@ -42,18 +50,18 @@ const TiendaOnline: React.FC = () => {
 
   return (
     <Box position="relative">
-      {/* Franja con el texto "Shop" */}
+      {/* Franja lateral o superior */}
       <Box
-        position="fixed"
-        top={{ base: 0, lg: '0' }}
+        position="absolute"
+        top={{ base: '0rem', md: '0' }}
         left={{ base: '0', lg: '0' }}
-        h={{ base: '5rem', lg: '100%' }}
+        h={{ base: '4rem', lg: '100%' }}
         w={{ base: '100%', lg: '7rem' }}
         bg="brand.accent1"
-        zIndex={1}
         display="flex"
         justifyContent="center"
         alignItems="center"
+        zIndex={2}
       >
         <Heading
           fontSize={{ base: '1.5rem', lg: '2rem' }}
@@ -70,12 +78,15 @@ const TiendaOnline: React.FC = () => {
       </Box>
 
       {/* Grid de productos */}
-      <Box p={5} ml={{ lg: '7rem' }}> {/* Ajuste de margen para la franja */}
-        <SimpleGrid columns={{ base: 1, sm: 3, md: 3, lg: 4 }} spacing={4} mt={{ base: "6rem", sm: "5rem", md: "5rem" }}>
+      <Box p={5} ml={{ lg: '7rem' }}>
+        <SimpleGrid
+          columns={{ base: 1, sm: 3, md: 3, lg: 4 }}
+          spacing={4}
+          mt={{ base: '6rem', sm: '5rem', md: '5rem' }}
+        >
           {products.map((product) => (
             <Box
               key={product._id}
-              
               position="relative"
               borderRadius="lg"
               overflow="hidden"
@@ -93,7 +104,26 @@ const TiendaOnline: React.FC = () => {
                 h="300px"
                 transition="transform 0.3s ease"
                 _hover={{ transform: 'scale(1.05)' }}
+                onClick={() => handleImageClick(product.image)}
               />
+
+              {/* Si stock es 0, mostramos overlay con AGOTADO */}
+              {product.stock === 0 && (
+  <Box
+    position="absolute"
+    top="0"
+    right="0"
+    borderRadius="0 0 0 8px"
+    bg="rgba(255, 0, 0, 0.5)"
+    color="white"
+    p={2}
+    fontSize="sm"
+    fontWeight="bold"
+    zIndex={2}
+  >
+    AGOTADO
+  </Box>
+)}
 
               {/* Título del producto */}
               <Text
@@ -123,7 +153,7 @@ const TiendaOnline: React.FC = () => {
                 {product.price.toFixed(0)} €
               </Badge>
 
-              {/* Botón para agregar al carrito */}
+              {/* Botón para agregar al carrito (deshabilitado si stock = 0) */}
               <IconButton
                 icon={<AddIcon />}
                 aria-label="Añadir al carrito"
@@ -134,13 +164,15 @@ const TiendaOnline: React.FC = () => {
                 borderRadius="full"
                 onClick={() =>
                   addToCart({
-                    id: product._id,
+                    _id: product._id,
                     name: product.name,
                     price: product.price,
                     description: product.description,
                     image: product.image,
+                    stock: product.stock,
                   })
                 }
+                isDisabled={product.stock === 0}
               />
 
               {/* Descripción que aparece al hacer hover */}
@@ -164,6 +196,24 @@ const TiendaOnline: React.FC = () => {
           ))}
         </SimpleGrid>
       </Box>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent maxW="80vw">
+          <ModalHeader></ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+  {selectedImage && (
+    <Image
+      src={selectedImage}
+      alt="Ampliado"
+      w="100%"
+      maxH="80vh"
+      objectFit="contain"
+    />
+  )}
+</ModalBody>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, MouseEvent } from "react";
 import {
   Box,
   Heading,
@@ -16,38 +16,70 @@ import { collections } from "../config/CollectionConfig";
 import ObraCard from "../components/ObraCard";
 import headerImage from "../assets/nani.jpg";
 
-const MiObra: React.FC = () => {
-  const [filtro, setFiltro] = useState<string>("");
-  const [hoveredCollection, setHoveredCollection] = useState<string | null>(null);
+/** Componente Slider que maneja su propia ref y estados de arrastre */
+const HorizontalSlider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  useEffect(() => {
-    if (sliderRef.current) {
-      sliderRef.current.scrollLeft = 0;
-    }
-  }, []);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleMouseDown = (e: MouseEvent) => {
     e.preventDefault();
     setIsDragging(true);
-    setStartX(e.pageX - (sliderRef.current?.offsetLeft || 0));
+    setStartX(e.clientX); // Posición inicial del ratón
     setScrollLeft(sliderRef.current?.scrollLeft || 0);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = (e: MouseEvent) => {
     if (!isDragging || !sliderRef.current) return;
     e.preventDefault();
-    const x = e.pageX - (sliderRef.current.offsetLeft || 0);
-    const walk = (x - startX) * 1.5;
+    const x = e.clientX;
+    const walk = (x - startX) * 1.5; // Factor de desplazamiento
     sliderRef.current.scrollLeft = scrollLeft - walk;
   };
 
   const handleMouseUpOrLeave = () => {
     setIsDragging(false);
   };
+
+  return (
+    <Flex
+      ref={sliderRef}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUpOrLeave}
+      onMouseLeave={handleMouseUpOrLeave}
+      display="inline-flex"
+      whiteSpace="nowrap"
+      flexWrap="nowrap"
+      overflowX="auto"
+      cursor={isDragging ? "grabbing" : "grab"}
+      css={{
+        "&::-webkit-scrollbar": { display: "none" },
+        "-ms-overflow-style": "none", // IE / Edge
+        scrollbarWidth: "none",       // Firefox
+      }}
+    >
+      {children}
+    </Flex>
+  );
+};
+
+/** Función para "barajar" un array al estilo Fisher-Yates */
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+const MiObra: React.FC = () => {
+  const [filtro, setFiltro] = useState<string>("");
+  const [hoveredCollection, setHoveredCollection] = useState<string | null>(null);
 
   // Filtrar colecciones si fuera necesario (usando el estado 'filtro')
   const coleccionesFiltradas = filtro
@@ -65,6 +97,7 @@ const MiObra: React.FC = () => {
           objectPosition="center"
           w="100%"
           h="100%"
+          draggable={false}
         />
         <Box
           position="absolute"
@@ -79,9 +112,10 @@ const MiObra: React.FC = () => {
         {/* Franja lateral o superior */}
         <Box
           position="absolute"
-          top={{ base: 0, lg: "0" }}
+          top={{ base: "0", md: "0" }}
+          
           left={{ base: "0", lg: "0" }}
-          h={{ base: "5rem", lg: "100%" }}
+          h={{ base: "4rem", lg: "100%" }}
           w={{ base: "100%", lg: "7rem" }}
           bg="brand.primary"
           display="flex"
@@ -105,7 +139,7 @@ const MiObra: React.FC = () => {
         {/* Contenedor principal */}
         <Flex
           position="absolute"
-          top="50%"
+          top={{ base: "55%", md: "50%" }}
           left="50%"
           transform="translate(-50%, -50%)"
           zIndex={3}
@@ -192,6 +226,7 @@ const MiObra: React.FC = () => {
                 }
                 alt="Vista previa de la colección"
                 borderRadius="md"
+                draggable={false}
               />
             </Box>
           )}
@@ -201,8 +236,8 @@ const MiObra: React.FC = () => {
       {/* Galería separada por colección */}
       <Box pl={{ base: "1rem", lg: "3rem" }} py="3rem">
         {coleccionesFiltradas.map((collection) => {
-          // Si es "centinelas", barajamos las obras
           let obras = collection.obras;
+          // Si es "centinelas", barajamos las obras
           if (collection.slug === "centinelas") {
             obras = shuffleArray(obras);
           }
@@ -217,27 +252,10 @@ const MiObra: React.FC = () => {
               </Text>
 
               {/* Slider horizontal */}
-              <Flex
-                ref={sliderRef}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUpOrLeave}
-                onMouseLeave={handleMouseUpOrLeave}
-                display="inline-flex"
-                whiteSpace="nowrap"
-                flexWrap="nowrap"
-                overflowX="auto"
-                cursor={isDragging ? "grabbing" : "grab"}
-                css={{
-                  "&::-webkit-scrollbar": { display: "none" },
-                  msOverflowStyle: "none",   // Corregido (camelCase o string)
-                  scrollbarWidth: "none",
-                }}
-                px={0}
-              >
+              <HorizontalSlider>
                 {obras.map((obra, index) => (
                   <Box
-                    key={`${obra.titulo}-${index}`} // Corregido para evitar claves duplicadas
+                    key={`${obra.titulo}-${index}`}
                     display="inline-block"
                     flexShrink={0}
                     width={{ base: "80%", sm: "60%", md: "40%", lg: "22%" }}
@@ -252,7 +270,7 @@ const MiObra: React.FC = () => {
                     />
                   </Box>
                 ))}
-              </Flex>
+              </HorizontalSlider>
 
               {/* Botón para ver la colección */}
               <Flex justify="flex-start" mt={4}>
@@ -271,13 +289,3 @@ const MiObra: React.FC = () => {
 };
 
 export default MiObra;
-
-/** Función para "barajar" un array al estilo Fisher-Yates */
-function shuffleArray<T>(array: T[]): T[] {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}

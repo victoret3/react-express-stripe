@@ -1,56 +1,51 @@
 import dotenv from 'dotenv';
-
-// Siempre carga las variables al inicio
-dotenv.config();
-console.log('Stripe Key:', process.env.STRIPE_SECRET_KEY);
-console.log('Frontend URL:', process.env.FRONTEND_URL);
-
 import express from 'express';
 import cors from 'cors';
 
+// Carga variables de entorno
+dotenv.config();
 
 const configureServer = (app) => {
-  // Middleware para habilitar CORS
-  app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Cambia esto según tu frontend
-    methods: ['GET', 'POST'], // Métodos permitidos
-    allowedHeaders: ['Content-Type', 'Authorization'], // Cabeceras permitidas
-  }));
+  // 1) CORS
+  app.use(
+    cors({
+      origin: [
+        'https://naniboron.web.app',
+        'http://localhost:3000'
+      ],
+      methods: ['GET', 'POST'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+    })
+  );
 
-  // Middleware para manejar JSON
+  // 2) parseo de JSON
   app.use(
     express.json({
-      // Stripe necesita el cuerpo crudo para algunos endpoints
+      // Stripe Webhook requiere rawBody en /payment/session-complete
       verify: (req, res, buf) => {
-        if (req.originalUrl.startsWith('/payment/session-complete')) {
+        if (req.originalUrl.startsWith('/api/payment/session-complete')) {
           req.rawBody = buf.toString();
         }
       },
     })
   );
 
-  // Middleware opcional: Para registrar peticiones durante el desarrollo
+  // 3) Logging básico de cada request
   app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     next();
   });
 
-  // Middleware para manejar CORS (si necesitas acceso desde el frontend)
-  app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*'); // Permitir todas las conexiones (ajustar en producción)
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-  });
-
-  // Middleware para manejar errores de configuración
+  // 4) Check de Stripe
   if (!process.env.STRIPE_SECRET_KEY) {
-    console.warn('⚠️  STRIPE_SECRET_KEY no está configurada en el archivo .env');
+    console.warn('⚠️  STRIPE_SECRET_KEY no configurada en .env o variables de entorno');
   }
 
-  if (!process.env.FRONTEND_URL) {
-    console.warn('⚠️  FRONTEND_URL no está configurada en el archivo .env');
-  }
+  // Info opcional
+  console.log(`
+[configureServer] Entorno: ${process.env.NODE_ENV || 'development'}
+FRONTEND_URL: ${process.env.FRONTEND_URL || 'http://localhost:3000'}
+  `);
 };
 
 export default configureServer;
