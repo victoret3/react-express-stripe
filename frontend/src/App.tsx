@@ -21,10 +21,9 @@ import Contacto from "./pages/Contacto";
 import NFTDetailPage from './pages/NFTDetailPage';
 import CollectionDetailPage from './pages/CollectionDetailPage';
 import LazyMintPage from './pages/LazyMintPage';
-import NFTSuccessPage from './pages/NFTSuccessPage';
-import { useToast } from '@chakra-ui/react';
+import NFTSuccessPage from "./pages/NFTSuccessPage";
 import { switchToCorrectNetwork } from './config/network';
-
+import { useToast } from "@chakra-ui/react";
 const App: React.FC = () => {
   const toast = useToast();
 
