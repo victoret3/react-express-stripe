@@ -1,15 +1,17 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   description: { type: String },
-  image: { type: String, default: 'https://via.placeholder.com/150' },
-  stock: { type: Number, default: 1 },
-}, {
-  timestamps: true,
+  image: { type: String },
+  stock: { type: Number, default: 0 },
+  stripeProductId: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
-const Product = mongoose.model('Product', productSchema);
+// Especificar explícitamente el nombre de la colección como 'products'
+const Product = mongoose.models.Product || mongoose.model('Product', productSchema, 'products');
 
-export default Product;
+module.exports = Product;
