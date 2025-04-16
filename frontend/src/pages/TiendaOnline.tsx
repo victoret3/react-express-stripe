@@ -28,7 +28,7 @@ const TiendaOnline: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('https://nani-boronat.vercel.app/api/products');
+        const response = await axios.get('https://nani-boronat-api.vercel.app/api/products');
         console.log('Productos devueltos:', response.data);
         setProducts(response.data);
       } catch (error) {
@@ -52,7 +52,7 @@ const TiendaOnline: React.FC = () => {
     <Box position="relative">
       {/* Franja lateral o superior */}
       <Box
-        position="absolute"
+        position="fixed"
         top={{ base: '0rem', md: '0' }}
         left={{ base: '0', lg: '0' }}
         h={{ base: '4rem', lg: '100%' }}
@@ -60,6 +60,7 @@ const TiendaOnline: React.FC = () => {
         bg="brand.accent1"
         display="flex"
         justifyContent="center"
+        maxH="100vh"
         alignItems="center"
         zIndex={2}
       >

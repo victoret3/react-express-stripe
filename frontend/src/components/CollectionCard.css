@@ -1,0 +1,93 @@
+.collection-card {
+  display: block;
+  background-color: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.collection-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.collection-cover {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+}
+
+.collection-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.collection-card:hover .collection-image {
+  transform: scale(1.05);
+}
+
+.collection-info {
+  padding: 20px;
+}
+
+.collection-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  color: #1a202c;
+}
+
+.collection-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+.collection-floor {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.collection-description {
+  font-size: 0.95rem;
+  color: #4a5568;
+  margin: 0 0 15px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.collection-creator {
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+.collection-creator span {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+@media (max-width: 768px) {
+  .collection-cover {
+    height: 180px;
+  }
+  
+  .collection-name {
+    font-size: 1.2rem;
+  }
+  
+  .collection-info {
+    padding: 15px;
+  }
+} 

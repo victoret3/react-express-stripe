@@ -17,7 +17,8 @@ import {
   useToast,
   Divider,
   HStack,
-  Spinner
+  Spinner,
+  useBreakpointValue
 } from '@chakra-ui/react';
 import { FiShoppingCart, FiTrash2, FiArrowRight } from 'react-icons/fi';
 import { useCart } from '../CartContext';
@@ -26,11 +27,31 @@ import { Product } from '../types/Product';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY || '');
 
-const CartSummary: React.FC = () => {
+interface CartSummaryProps {
+  filter?: string;
+}
+
+const CartSummary: React.FC<CartSummaryProps> = ({ filter }) => {
   const { cart, removeFromCart, clearCart } = useCart();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const toast = useToast();
+
+  // Estilo responsivo para el icono
+  const iconColor = useBreakpointValue({ base: "white", md: "black" });
+  const iconStyle = useBreakpointValue({
+    base: {
+      // Para móvil: icono blanco sin sombra
+    },
+    md: {
+      // Para escritorio: icono negro con borde blanco
+      backgroundColor: 'white',
+      padding: '8px',
+      borderRadius: '4px',
+      outline: '1px solid black',
+      boxShadow: '0 0 0 1px black'
+    }
+  });
 
   const totalAmount = cart.reduce((sum, item: Product) => {
     const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
@@ -77,13 +98,13 @@ const CartSummary: React.FC = () => {
         quantity: 1,
       }));
 
-      const response = await fetch('https://nani-boronat.vercel.app/api/payment/session-initiate', {
+      const response = await fetch('https://nani-boronat-api.vercel.app/api/payment/session-initiate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           lineItems,
-          successUrl: 'https://naniboron.web.app/success',
-          cancelUrl: 'https://naniboron.web.app/cancel',
+          successUrl: 'https://naniboron.web.app/success?session_id={CHECKOUT_SESSION_ID}',
+          cancelUrl: 'https://naniboron.web.app/tienda-online',
         }),
       });
 
@@ -114,15 +135,23 @@ const CartSummary: React.FC = () => {
   return (
     <>
       <Box position="relative">
-        <IconButton
-          icon={<FiShoppingCart />}
-          aria-label="Ver carrito"
-          onClick={() => setDrawerOpen(true)}
-          variant="ghost"
-          size="lg"
-          fontSize="xl"
-          _hover={{ bg: 'gray.100' }}
-        />
+        <Box display="inline-block" style={iconStyle}>
+          <IconButton
+            icon={<FiShoppingCart />}
+            aria-label="Ver carrito"
+            onClick={() => setDrawerOpen(true)}
+            variant="ghost"
+            size="md"
+            fontSize="xl"
+            color={iconColor}
+            bg="transparent"
+            _hover={{ 
+              bg: 'whiteAlpha.200'
+            }}
+            _active={{ bg: 'none' }}
+            _focus={{ boxShadow: 'none' }}
+          />
+        </Box>
         {cart.length > 0 && (
           <Badge
             position="absolute"

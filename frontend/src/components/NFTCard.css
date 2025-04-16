@@ -1,0 +1,148 @@
+.nft-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  color: #1a202c;
+  height: 100%;
+  position: relative;
+}
+
+.nft-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.nft-card-image-container {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  overflow: hidden;
+}
+
+.nft-card-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.nft-card:hover .nft-card-image {
+  transform: scale(1.05);
+}
+
+.nft-rarity {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+}
+
+.nft-rarity.common {
+  background-color: #68d391;
+}
+
+.nft-rarity.uncommon {
+  background-color: #4299e1;
+}
+
+.nft-rarity.rare {
+  background-color: #805ad5;
+}
+
+.nft-rarity.epic {
+  background-color: #d69e2e;
+}
+
+.nft-rarity.legendary {
+  background-color: #e53e3e;
+}
+
+.nft-card-details {
+  padding: 16px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.nft-card-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nft-card-price {
+  margin-bottom: 10px;
+}
+
+.price-amount {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.nft-card-owner {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  color: #718096;
+}
+
+.owner-label {
+  margin-right: 5px;
+}
+
+.owner-address {
+  font-family: monospace;
+}
+
+.nft-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.nft-badge {
+  background-color: #edf2f7;
+  color: #4a5568;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.nft-badge.more {
+  background-color: #e2e8f0;
+  color: #718096;
+}
+
+.nft-card-buy {
+  background-color: #4c1d95;
+  color: white;
+  font-weight: 600;
+  padding: 12px 0;
+  text-align: center;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+}
+
+.nft-card:hover .nft-card-buy {
+  background-color: #6b21a8;
+} 

@@ -1,0 +1,8 @@
+{
+  "abi": [
+    {"inputs":[],"name":"getTotalCollections","outputs":[{"type":"uint256"}],"stateMutability":"view","type":"function"},
+    {"inputs":[],"name":"getAllCollections","outputs":[{"components":[{"name":"collectionAddress","type":"address"},{"name":"name","type":"string"},{"name":"symbol","type":"string"},{"name":"description","type":"string"},{"name":"imageCid","type":"string"},{"name":"owner","type":"address"},{"name":"timestamp","type":"uint256"}],"type":"tuple[]"}],"stateMutability":"view","type":"function"},
+    {"inputs":[{"name":"name","type":"string"},{"name":"symbol","type":"string"},{"name":"description","type":"string"},{"name":"imageCid","type":"string"}],"name":"createCollection","outputs":[{"type":"address"}],"stateMutability":"nonpayable","type":"function"},
+    {"inputs":[{"name":"owner","type":"address"}],"name":"getUserCollections","outputs":[{"type":"address[]"}],"stateMutability":"view","type":"function"}
+  ]
+} 

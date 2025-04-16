@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
             <FooterLink to="/tienda-online">Tienda</FooterLink>
             <FooterLink to="/sobre-mi">Sobre Mí</FooterLink>
             <FooterLink to="/mi-obra">Mi Obra</FooterLink>
-            <FooterLink to="/nfts">NFTs</FooterLink>
+            <FooterLink to="/lazy-mint">NFTs</FooterLink>
           </Stack>
 
           {/* Legal */}

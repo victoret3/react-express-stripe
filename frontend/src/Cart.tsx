@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, Text, Button, Flex, Grid, Image, IconButton, useToast, Heading } from '@chakra-ui/react';
+import { FiTrash2, FiX } from 'react-icons/fi';
 import { useCart } from './CartContext';
 import CartSummary from './components/CartSummary';
-import { FiTrash2, FiX } from 'react-icons/fi';
 
 const Cart: React.FC = () => {
   const { cart, removeFromCart, clearCart } = useCart();
@@ -79,6 +79,10 @@ const Cart: React.FC = () => {
                       variant="ghost"
                       colorScheme="red"
                       onClick={() => handleRemoveItem(item._id, item.name)}
+                      _hover={{
+                        bg: 'white',
+                        color: 'black',
+                      }}
                     />
                   </Flex>
 
