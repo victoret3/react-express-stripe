@@ -2,40 +2,28 @@ const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-// Middleware para permitir CORS específico
-router.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://naniboron.web.app');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, stripe-signature');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
+// Sin middleware CORS adicional, usamos el global de index.js
+
+// Endpoint para iniciar checkout de NFT - extremadamente simplificado
+router.post('/session', async (req, res) => {
+  // Asegurar encabezados CORS para esta ruta
+  res.header('Access-Control-Allow-Origin', 'https://naniboron.web.app');
+  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
   
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
   
-  next();
-});
-
-// Endpoint para iniciar checkout de NFT
-router.post('/session', async (req, res) => {
   try {
-    console.log('📝 Recibida solicitud para iniciar sesión NFT checkout');
+    console.log('📝 Solicitud recibida para crear sesión NFT');
     console.log('Body:', JSON.stringify(req.body));
     
-    const { lazyId, email, metadataUrl } = req.body;
+    const { lazyId, walletAddress, email, metadataUrl } = req.body;
     
-    if (!lazyId || !email) {
-      return res.status(400).json({ 
-        error: 'Se requieren lazyId y email para la compra',
-        received: { lazyId, email }
-      });
-    }
-    
-    // Precio fijo para NFTs
-    const priceEur = 20; // 20 euros
-    
-    // Crear sesión de pago
-    const session = await stripe.checkout.sessions.create({
+    // Crear sesión básica
+    const sessionConfig = {
       payment_method_types: ['card'],
       line_items: [{
         price_data: {
@@ -45,30 +33,34 @@ router.post('/session', async (req, res) => {
             description: 'NFT Exclusivo de Nani Boronat - Edición Limitada',
             images: ['https://naniboronat.com/wp-content/uploads/2023/11/naniboronat.png'],
           },
-          unit_amount: priceEur * 100, // Convertir a céntimos
+          unit_amount: 2000, // 20 EUR
         },
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL || 'https://naniboron.web.app'}/nft-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL || 'https://naniboron.web.app'}/lazy-mint`,
-      customer_email: email,
+      success_url: 'https://naniboron.web.app/nft-success?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: 'https://naniboron.web.app/lazy-mint',
       metadata: {
         lazyId,
         metadataUrl,
         type: 'lazy_mint',
-        useFixedPrice: 'true'
+        walletAddress
       }
-    });
+    };
     
-    console.log('✅ Sesión de pago NFT creada:', session.id);
+    if (email) {
+      sessionConfig.customer_email = email;
+    }
+    
+    const session = await stripe.checkout.sessions.create(sessionConfig);
+    console.log('✅ Sesión creada:', session.id);
     
     return res.status(200).json({ 
       url: session.url, 
       sessionId: session.id 
     });
   } catch (error) {
-    console.error('❌ Error al crear sesión de pago NFT:', error);
+    console.error('❌ Error creando sesión:', error);
     return res.status(500).json({ error: error.message });
   }
 });

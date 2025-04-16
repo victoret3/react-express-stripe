@@ -12,5 +12,11 @@
         "src": "/api/(.*)",
         "dest": "/api/index.js"
       }
+    ],
+    "crons": [
+      {
+        "path": "/api/cron-mint-processor",
+        "schedule": "15 14 * * *"
+      }
     ]
   }

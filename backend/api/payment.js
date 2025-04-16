@@ -162,4 +162,82 @@ router.get('/api/payment/order/:sessionId', async (req, res) => {
   }
 });
 
+// Endpoint directo para lazy mint usando GET en lugar de POST para evitar CORS preflight
+router.get('/lazy-mint-direct', async (req, res) => {
+  // Permitir solicitudes desde cualquier origen para este endpoint específico
+  res.header('Access-Control-Allow-Origin', '*');  // No usar 'credentials' para evitar preflight
+  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  try {
+    console.log('⚡ Recibida solicitud GET para lazy-mint-direct');
+    console.log('Query params:', req.query);
+    
+    // Obtener parámetros de la URL
+    const { lazyId, email, metadataUrl, walletAddress } = req.query;
+    
+    if (!lazyId || !walletAddress) {
+      console.error('Error: Faltan parámetros', { lazyId, walletAddress });
+      return res.status(400).json({ 
+        error: 'Se requieren lazyId y walletAddress para la compra',
+        received: { lazyId, walletAddress }
+      });
+    }
+    
+    // Precio fijo para los NFTs
+    const priceEur = 20; // 20 euros precio fijo
+    
+    // Crear objeto básico de sesión
+    const sessionConfig = {
+      payment_method_types: ['card'],
+      line_items: [{
+        price_data: {
+          currency: 'eur',
+          product_data: {
+            name: `NFT Nani Boronat (#${lazyId})`,
+            description: 'NFT Exclusivo de Nani Boronat - Edición Limitada',
+            images: ['https://naniboronat.com/wp-content/uploads/2023/11/naniboronat.png'],
+          },
+          unit_amount: priceEur * 100, // Convertir a céntimos
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      success_url: `${process.env.FRONTEND_URL || 'https://naniboron.web.app'}/nft-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL || 'https://naniboron.web.app'}/lazy-mint`,
+      metadata: {
+        lazyId,
+        metadataUrl,
+        type: 'lazy_mint',
+        useFixedPrice: 'true',
+        walletAddress
+      }
+    };
+    
+    // Añadir email solo si está presente
+    if (email) {
+      sessionConfig.customer_email = email;
+    }
+    
+    console.log('Creando sesión con config:', JSON.stringify(sessionConfig, null, 2));
+    
+    // Crear la sesión de Stripe
+    const session = await stripe.checkout.sessions.create(sessionConfig);
+    console.log('✅ Sesión creada:', session.id);
+    
+    // Devolver la URL de checkout
+    return res.status(200).json({ 
+      url: session.url, 
+      sessionId: session.id
+    });
+  } catch (error) {
+    console.error('❌ Error creando sesión lazy-mint-direct:', error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router; 

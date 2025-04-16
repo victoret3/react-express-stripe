@@ -29,11 +29,28 @@ router.post('/', async (req, res) => {
         // Obtener detalles de la compra
         const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
         console.log(`📦 Items comprados: ${lineItems.data.length}`);
-      
-        // Actualizar stock para modo emergencia usando ID de MongoDB
-        await updateStockEmergency(session.id);
+        
+        // IMPORTANTE: Verificar si es un NFT o un producto normal
+        const isNftTransaction = session.metadata && session.metadata.type === 'lazy_mint';
+        
+        if (isNftTransaction) {
+          console.log('🔷 Esta es una transacción de NFT - NO se actualizará ningún stock de producto');
+          // Para NFTs, podríamos registrar la compra o activar el proceso de minteo, pero no afectar el stock
+          const lazyId = session.metadata.lazyId;
+          const walletAddress = session.metadata.walletAddress;
+          const metadataUrl = session.metadata.metadataUrl;
+          
+          console.log(`💎 NFT adquirido: LazyID=${lazyId}, Wallet=${walletAddress}`);
+          
+          // EJECUTAR EL MINTEO DEL NFT
+          await mintNFT(lazyId, walletAddress, metadataUrl);
+        } else {
+          console.log('🛒 Esta es una compra de producto normal - Actualizando stock');
+          // Para productos normales, actualizar el stock
+          await updateProductStock(lineItems.data);
+        }
       } catch (err) {
-        console.error(`❌ Error obteniendo line items: ${err.message}`);
+        console.error(`❌ Error procesando la compra: ${err.message}`);
       }
     }
     
@@ -183,6 +200,204 @@ async function updateProductStock(items) {
     }
   } catch (error) {
     console.error('❌ Error actualizando stock:', error);
+  }
+}
+
+// Función para mintear NFT directamente
+async function mintNFT(lazyId, walletAddress, metadataUrl) {
+  try {
+    console.log(`⚙️ Iniciando proceso de minteo para NFT: ${lazyId}`);
+    
+    // Cargar ethers.js
+    const ethers = require('ethers');
+    
+    // Verificar que tenemos la private key y dirección del contrato
+    const privateKey = process.env.PRIVATE_KEY;
+    const contractAddress = process.env.NFT_CONTRACT_ADDRESS;
+    
+    // Validaciones
+    if (!privateKey) {
+      throw new Error('No se encontró PRIVATE_KEY en las variables de entorno');
+    }
+    
+    if (!contractAddress) {
+      throw new Error('No se encontró NFT_CONTRACT_ADDRESS en las variables de entorno');
+    }
+    
+    if (!ethers.utils.isAddress(walletAddress)) {
+      throw new Error(`La dirección de wallet ${walletAddress} no es válida`);
+    }
+    
+    // ABI mínimo necesario para mintear NFT
+    const NFT_ABI = [
+      "function mint(address to, string memory tokenId) external returns (uint256)",
+      "function mintTo(address to, string memory uri) external returns (uint256)"
+    ];
+    
+    // Configurar provider y wallet
+    console.log(`🔌 Conectando a RPC: ${process.env.RPC_URL || 'https://sepolia-rollup.arbitrum.io/rpc'}`);
+    const provider = new ethers.providers.JsonRpcProvider(
+      process.env.RPC_URL || 'https://sepolia-rollup.arbitrum.io/rpc'
+    );
+    
+    const wallet = new ethers.Wallet(privateKey, provider);
+    console.log(`🔑 Wallet lista para mintear: ${wallet.address}`);
+    
+    // Crear instancia del contrato
+    const nftContract = new ethers.Contract(contractAddress, NFT_ABI, wallet);
+    console.log(`📄 Contrato NFT cargado en: ${contractAddress}`);
+    
+    // Mintear el NFT
+    let tx;
+    let method = '';
+    
+    if (metadataUrl) {
+      console.log(`🔗 Usando metadataUrl: ${metadataUrl}`);
+      method = 'mintTo';
+      tx = await nftContract.mintTo(walletAddress, metadataUrl, { 
+        gasLimit: 500000 
+      });
+    } else {
+      console.log(`🆔 Usando lazyId: ${lazyId}`);
+      method = 'mint';
+      tx = await nftContract.mint(walletAddress, lazyId, { 
+        gasLimit: 500000 
+      });
+    }
+    
+    console.log(`📤 Transacción de minteo enviada. Hash: ${tx.hash}, Método: ${method}`);
+    
+    // Esperar a que la transacción se confirme
+    console.log('⏳ Esperando confirmación de la transacción...');
+    const receipt = await tx.wait();
+    
+    console.log(`✅ NFT MINTEADO CON ÉXITO! Hash: ${receipt.transactionHash}`);
+    console.log(`   Bloque: ${receipt.blockNumber}, Gas usado: ${receipt.gasUsed.toString()}`);
+    
+    // Intentar registrar en la base de datos (pero no es crítico)
+    try {
+      await registerMintedNFT({
+        lazyId,
+        walletAddress,
+        metadataUrl,
+        txHash: receipt.transactionHash,
+        blockNumber: receipt.blockNumber,
+        timestamp: new Date()
+      });
+    } catch (dbError) {
+      console.log('⚠️ No se pudo registrar en MongoDB, pero el NFT ya está minteado correctamente');
+      console.log(`   Error: ${dbError.message}`);
+    }
+    
+    return {
+      success: true,
+      txHash: receipt.transactionHash,
+      blockNumber: receipt.blockNumber
+    };
+    
+  } catch (error) {
+    console.error('❌ ERROR AL MINTEAR NFT:', error);
+    console.error('   Mensaje:', error.message);
+    
+    // Intentar registrar el error en base de datos (pero no es crítico)
+    try {
+      await registerMintError({
+        lazyId,
+        walletAddress,
+        error: error.message,
+        timestamp: new Date()
+      });
+    } catch (dbError) {
+      console.error('Error adicional al intentar registrar error:', dbError.message);
+    }
+    
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+
+// Registrar NFT minteado en la base de datos
+async function registerMintedNFT(data) {
+  try {
+    // Comprobar si MongoDB está configurado
+    if (!process.env.MONGO_URI) {
+      console.log('⚠️ No hay MONGO_URI configurado, saltando registro en base de datos');
+      return;
+    }
+
+    // Conexión a MongoDB
+    if (mongoose.connection.readyState !== 1) {
+      console.log('🔄 Intentando conectar a MongoDB...');
+      await mongoose.connect(process.env.MONGO_URI);
+      console.log('✅ Conexión a MongoDB establecida');
+    }
+    
+    // Esquema para NFTs minteados
+    const mintedNFTSchema = new mongoose.Schema({
+      lazyId: String,
+      walletAddress: String,
+      metadataUrl: String,
+      txHash: String,
+      blockNumber: Number,
+      timestamp: Date
+    });
+    
+    // Modelo
+    const MintedNFT = mongoose.models.MintedNFT || 
+      mongoose.model('MintedNFT', mintedNFTSchema, 'minted_nfts');
+    
+    // Guardar registro
+    const newMintedNFT = new MintedNFT(data);
+    await newMintedNFT.save();
+    
+    console.log(`📝 NFT registrado en base de datos: ${data.lazyId}`);
+    
+  } catch (error) {
+    console.error('❌ Error al registrar NFT minteado:', error.message);
+    // No lanzamos el error para que no afecte al flujo principal
+  }
+}
+
+// Registrar error de minteo
+async function registerMintError(data) {
+  try {
+    // Comprobar si MongoDB está configurado
+    if (!process.env.MONGO_URI) {
+      console.log('⚠️ No hay MONGO_URI configurado, saltando registro en base de datos');
+      return;
+    }
+    
+    // Conexión a MongoDB
+    if (mongoose.connection.readyState !== 1) {
+      console.log('🔄 Intentando conectar a MongoDB...');
+      await mongoose.connect(process.env.MONGO_URI);
+      console.log('✅ Conexión a MongoDB establecida');
+    }
+    
+    // Esquema para errores de minteo
+    const mintErrorSchema = new mongoose.Schema({
+      lazyId: String,
+      walletAddress: String,
+      error: String,
+      timestamp: Date,
+      resolved: { type: Boolean, default: false }
+    });
+    
+    // Modelo
+    const MintError = mongoose.models.MintError || 
+      mongoose.model('MintError', mintErrorSchema, 'mint_errors');
+    
+    // Guardar registro
+    const newMintError = new MintError(data);
+    await newMintError.save();
+    
+    console.log(`📝 Error de minteo registrado en base de datos: ${data.lazyId}`);
+    
+  } catch (error) {
+    console.error('❌ Error al registrar error de minteo:', error.message);
+    // No lanzamos el error para que no afecte al flujo principal
   }
 }
 

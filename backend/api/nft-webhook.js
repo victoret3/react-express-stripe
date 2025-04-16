@@ -1,6 +1,9 @@
 // Webhook para manejar eventos de Stripe NFT
 const Stripe = require('stripe');
 require('dotenv').config();
+const ethers = require('ethers');
+const mongoose = require('mongoose');
+const { exec } = require('child_process'); // Módulo nativo para ejecutar comandos
 
 // Configurar Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -73,35 +76,65 @@ module.exports = async (req, res) => {
       if (isNFT) {
         console.log('Procesando sesión de NFT completada:', session.id);
         
-        // Obtener el ID del NFT
-        const nftId = metadata.nftId || metadata.lazyId || null;
+        // Obtener información para el minteo
+        const lazyId = metadata.nftId || metadata.lazyId || null;
+        const walletAddress = metadata.walletAddress;
+        const metadataUrl = metadata.metadataUrl;
         
-        if (!nftId) {
-          console.error('No se encontró ID de NFT en los metadatos:', metadata);
-          return res.status(400).json({ error: 'Metadatos de NFT incompletos' });
+        if (!lazyId || !walletAddress) {
+          console.error('Datos insuficientes para el minteo:', metadata);
+          return res.status(400).json({ error: 'Metadatos de NFT incompletos para minteo' });
         }
         
         try {
-          // Actualizar los metadatos de la sesión para indicar que está listo para mintear
+          console.log(`🚀 Agregando NFT a la cola de minteo: ${lazyId} para wallet ${walletAddress}`);
+          
+          // Añadir a la cola de minteo en MongoDB
+          const queueResult = await addToMintQueue({
+            sessionId: session.id,
+            lazyId,
+            walletAddress,
+            metadataUrl,
+            customerEmail: session.customer_email,
+            createdAt: new Date(),
+            status: 'pending'
+          });
+          
+          // Actualizar los metadatos de la sesión con el resultado
           await stripe.checkout.sessions.update(session.id, {
             metadata: {
               ...metadata,
-              nft_status: 'ready_to_mint',
+              nft_status: 'queued',
               processed_at: new Date().toISOString(),
-              token_id: nftId
+              mint_queue_id: queueResult.queueId
             }
           });
           
-          console.log(`✅ Sesión ${session.id} actualizada, NFT ${nftId} listo para ser minteado`);
+          console.log(`✅ NFT ${lazyId} agregado a la cola de minteo, ID: ${queueResult.queueId}`);
+          
+          // Ejecutar exactamente el mismo curl que funciona en la consola
+          console.log('🔄 Iniciando procesamiento inmediato con curl...');
+          exec('curl https://nani-boronat.vercel.app/api/cron-mint-processor', (error, stdout, stderr) => {
+            if (error) {
+              console.error(`❌ Error al ejecutar curl: ${error.message}`);
+              return;
+            }
+            if (stderr) {
+              console.error(`⚠️ Advertencia curl: ${stderr}`);
+            }
+            console.log(`✅ Respuesta del cron job: ${stdout}`);
+          });
           
           return res.status(200).json({
             received: true,
-            nftId: nftId,
-            status: 'ready_to_mint'
+            nftId: lazyId,
+            status: 'queued',
+            queueId: queueResult.queueId
           });
-        } catch (updateError) {
-          console.error('Error al actualizar metadatos de sesión:', updateError);
-          return res.status(500).json({ error: 'Error al actualizar la sesión' });
+          
+        } catch (queueError) {
+          console.error('Error al encolar el minteo:', queueError);
+          return res.status(500).json({ error: 'Error al encolar el minteo' });
         }
       } else {
         console.log('Evento de checkout completado pero no es NFT:', metadata.type);
@@ -116,4 +149,64 @@ module.exports = async (req, res) => {
     console.error('Error procesando el evento:', err);
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
-}; 
+};
+
+// Función para añadir un NFT a la cola de minteo
+async function addToMintQueue(data) {
+  try {
+    // Comprobar si MongoDB está configurado
+    if (!process.env.MONGO_URI) {
+      console.log('⚠️ No hay MONGO_URI configurado, simulando cola sin base de datos');
+      return { 
+        success: true, 
+        queueId: 'fake-queue-id-' + Date.now(),
+        message: 'Cola simulada (sin MongoDB)' 
+      };
+    }
+
+    // Conexión a MongoDB
+    if (mongoose.connection.readyState !== 1) {
+      console.log('🔄 Intentando conectar a MongoDB...');
+      await mongoose.connect(process.env.MONGO_URI);
+      console.log('✅ Conexión a MongoDB establecida');
+    }
+    
+    // Esquema para la cola de minteo
+    const mintQueueSchema = new mongoose.Schema({
+      sessionId: String,
+      lazyId: String,
+      walletAddress: String,
+      metadataUrl: String,
+      customerEmail: String,
+      createdAt: { type: Date, default: Date.now },
+      updatedAt: { type: Date, default: Date.now },
+      status: { 
+        type: String, 
+        enum: ['pending', 'processing', 'completed', 'failed'], 
+        default: 'pending' 
+      },
+      attempts: { type: Number, default: 0 },
+      txHash: String,
+      error: String
+    });
+    
+    // Modelo
+    const MintQueue = mongoose.models.MintQueue || 
+      mongoose.model('MintQueue', mintQueueSchema, 'mint_queue');
+    
+    // Guardar registro
+    const queueItem = new MintQueue(data);
+    await queueItem.save();
+    
+    console.log(`📝 NFT agregado a la cola de minteo: ${data.lazyId}`);
+    
+    return {
+      success: true,
+      queueId: queueItem._id.toString()
+    };
+    
+  } catch (error) {
+    console.error('❌ Error al agregar a la cola de minteo:', error.message);
+    throw error;
+  }
+} 

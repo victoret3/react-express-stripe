@@ -1,5 +1,8 @@
 // Importar dependencias
 const Stripe = require('stripe');
+const express = require('express');
+const router = express.Router();
+const ethers = require('ethers');
 require('dotenv').config();
 
 // Configurar Stripe con la clave secreta
@@ -99,4 +102,162 @@ module.exports = async (req, res) => {
       details: error.message
     });
   }
-}; 
+};
+
+// Endpoint para verificar el estado de una transacción de minteo NFT
+router.get('/tx/:txHash', async (req, res) => {
+  try {
+    const { txHash } = req.params;
+    
+    // Validar el hash de la transacción
+    if (!txHash || txHash.length !== 66 || !txHash.startsWith('0x')) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Hash de transacción inválido' 
+      });
+    }
+    
+    console.log(`🔍 Verificando estado de transacción: ${txHash}`);
+    
+    // Configurar provider
+    const provider = new ethers.providers.JsonRpcProvider(
+      process.env.RPC_URL || 'https://sepolia-rollup.arbitrum.io/rpc'
+    );
+    
+    // Obtener información de la transacción
+    const tx = await provider.getTransaction(txHash);
+    
+    if (!tx) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Transacción no encontrada' 
+      });
+    }
+    
+    // Verificar si la transacción ha sido incluida en un bloque
+    const receipt = await provider.getTransactionReceipt(txHash);
+    
+    if (!receipt) {
+      return res.json({
+        success: true,
+        status: 'pending',
+        txHash,
+        confirmations: tx.confirmations,
+        message: 'La transacción está pendiente de confirmación'
+      });
+    }
+    
+    // Verificar si la transacción fue exitosa
+    if (receipt.status === 1) {
+      return res.json({
+        success: true,
+        status: 'confirmed',
+        txHash,
+        blockNumber: receipt.blockNumber,
+        confirmations: tx.confirmations,
+        gasUsed: receipt.gasUsed.toString(),
+        message: 'NFT minteado con éxito'
+      });
+    } else {
+      return res.json({
+        success: false,
+        status: 'failed',
+        txHash,
+        blockNumber: receipt.blockNumber,
+        message: 'La transacción falló durante la ejecución'
+      });
+    }
+    
+  } catch (error) {
+    console.error('❌ Error verificando estado de transacción:', error);
+    return res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Endpoint para verificar NFTs minteados para una dirección específica
+router.get('/wallet/:address', async (req, res) => {
+  try {
+    const { address } = req.params;
+    
+    // Validar la dirección
+    if (!ethers.utils.isAddress(address)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Dirección de wallet inválida' 
+      });
+    }
+    
+    const contractAddress = process.env.NFT_CONTRACT_ADDRESS;
+    if (!contractAddress) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'Dirección del contrato no configurada en el servidor' 
+      });
+    }
+    
+    console.log(`🔍 Verificando NFTs para wallet: ${address}`);
+    
+    // Configurar provider
+    const provider = new ethers.providers.JsonRpcProvider(
+      process.env.RPC_URL || 'https://sepolia-rollup.arbitrum.io/rpc'
+    );
+    
+    // ABI mínimo para obtener balance y tokenURI
+    const minABI = [
+      "function balanceOf(address owner) external view returns (uint256)",
+      "function tokenOfOwnerByIndex(address owner, uint256 index) external view returns (uint256)",
+      "function tokenURI(uint256 tokenId) external view returns (string)"
+    ];
+    
+    // Crear instancia del contrato
+    const nftContract = new ethers.Contract(contractAddress, minABI, provider);
+    
+    // Obtener balance de NFTs del usuario
+    const balance = await nftContract.balanceOf(address);
+    console.log(`📊 Balance de NFTs: ${balance.toString()}`);
+    
+    // Si no tiene NFTs, retornar lista vacía
+    if (balance.eq(0)) {
+      return res.json({
+        success: true,
+        address,
+        nfts: []
+      });
+    }
+    
+    // Obtener los IDs de todos los NFTs del usuario
+    const nfts = [];
+    for (let i = 0; i < balance; i++) {
+      try {
+        const tokenId = await nftContract.tokenOfOwnerByIndex(address, i);
+        const tokenURI = await nftContract.tokenURI(tokenId);
+        
+        nfts.push({
+          tokenId: tokenId.toString(),
+          tokenURI
+        });
+      } catch (err) {
+        console.error(`Error obteniendo NFT #${i}:`, err.message);
+      }
+    }
+    
+    return res.json({
+      success: true,
+      address,
+      count: nfts.length,
+      nfts
+    });
+    
+  } catch (error) {
+    console.error('❌ Error verificando NFTs de la wallet:', error);
+    return res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+module.exports = router; 
