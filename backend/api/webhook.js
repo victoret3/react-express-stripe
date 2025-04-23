@@ -124,7 +124,7 @@ export default async (req, res) => {
         const Order = require('../models/Order');
         await Order.create({
           sessionId: session.id,
-          email: session.customer_email,
+          email: session.customer_email || '',
           items: lineItems.data.map(item => ({
             productId: item.price.product,
             description: item.description,
