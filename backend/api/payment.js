@@ -6,6 +6,72 @@ const mongoose = require('mongoose');
 // Inicializar Stripe una sola vez
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+// Endpoint de compra NFT Lazy Mint (precio fijo 20€)
+router.post('/lazy-mint', async (req, res) => {
+  // LOG para depuración: Verificar qué datos llegan realmente del frontend
+  console.log('[DEBUG][POST /api/payment/lazy-mint] Body recibido:', JSON.stringify(req.body, null, 2));
+  if (req.body.contractAddress) {
+    console.log('[DEBUG][POST /api/payment/lazy-mint] contractAddress recibido:', req.body.contractAddress);
+  } else {
+    console.warn('[DEBUG][POST /api/payment/lazy-mint] contractAddress NO RECIBIDO');
+  }
+  if (req.body.walletAddress) {
+    console.log('[DEBUG][POST /api/payment/lazy-mint] walletAddress recibido:', req.body.walletAddress);
+  }
+  if (req.body.metadataUrl) {
+    console.log('[DEBUG][POST /api/payment/lazy-mint] metadataUrl recibido:', req.body.metadataUrl);
+  }
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, stripe-signature');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  const { lazyId, email, metadataUrl, contractAddress, walletAddress } = req.body;
+
+  if (!lazyId || !email) {
+    return res.status(400).json({ error: 'Se requiere lazyId y email para la compra' });
+  }
+
+  try {
+    const priceEur = 20;
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [{
+        price_data: {
+          currency: 'eur',
+          product_data: {
+            name: `NFT Nani Boronat (#${lazyId})`,
+            description: 'NFT Exclusivo de Nani Boronat - Edición Limitada',
+            images: ['https://naniboronat.com/wp-content/uploads/2023/11/naniboronat.png'],
+            metadata: { lazyId }
+          },
+          unit_amount: priceEur * 100, // 20€ en céntimos
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/nft-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/comunidad`,
+      customer_email: email,
+      metadata: {
+        lazyId,
+        metadataUrl,
+        contractAddress, // <-- Ahora sí se envía a Stripe
+        walletAddress,   // <-- También lo enviamos
+        type: 'lazy_mint',
+        useFixedPrice: 'true'
+      }
+    });
+    return res.status(200).json({ url: session.url, sessionId: session.id });
+  } catch (error) {
+    console.error('Error creando la sesión de Stripe para lazy mint:', error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 // Endpoint de prueba
 router.get('/api/payment', (req, res) => {
   res.send({
@@ -16,7 +82,7 @@ router.get('/api/payment', (req, res) => {
 });
 
 // Iniciar checkout
-router.post('/api/payment/session-initiate', async (req, res) => {
+router.post('/session-initiate', async (req, res) => {
   // Configuración CORS específica para esta ruta
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
@@ -90,6 +156,18 @@ router.post('/api/payment/session-initiate', async (req, res) => {
     // Asegurarnos de devolver un error en formato JSON
     return res.status(500).json({ error: error.message, stack: error.stack });
   }
+});
+
+// Alias endpoint for backward compatibility
+router.get('/api/payment/session-complete', async (req, res) => {
+  // Accept session_id as query param
+  const { session_id } = req.query;
+  if (!session_id) {
+    return res.status(400).json({ error: 'Se requiere session_id' });
+  }
+  // Delegate to the main handler
+  req.params.sessionId = session_id;
+  return router.handle(req, res, () => {});
 });
 
 // Endpoint para obtener detalles de un pedido
@@ -208,7 +286,7 @@ router.get('/lazy-mint-direct', async (req, res) => {
       }],
       mode: 'payment',
       success_url: `${process.env.FRONTEND_URL || 'https://naniboron.web.app'}/nft-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL || 'https://naniboron.web.app'}/lazy-mint`,
+      cancel_url: `${process.env.FRONTEND_URL || 'https://naniboron.web.app'}/comunidad`,
       metadata: {
         lazyId,
         metadataUrl,

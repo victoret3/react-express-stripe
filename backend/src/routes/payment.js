@@ -227,7 +227,7 @@ router.post('/api/payment/nft-webhook', async (req, res) => {
 });
 
 // Iniciar checkout
-router.post('/api/payment/session-initiate', async (req, res) => {
+router.post('/session-initiate', async (req, res) => {
   // Configuración CORS específica para esta ruta
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
@@ -304,29 +304,27 @@ router.post('/api/payment/session-initiate', async (req, res) => {
 });
 
 // Endpoint específico para compra de NFTs con lazy minting
-router.post('/api/payment/lazy-mint', async (req, res) => {
+router.post('/lazy-mint', async (req, res) => {
   // Configuración CORS específica para esta ruta
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  
+
   // Si es una solicitud OPTIONS preflight, responder con 200
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
-  
+
   const { lazyId, email, metadataUrl } = req.body;
-  
+
   if (!lazyId || !email) {
     return res.status(400).json({ error: 'Se requiere lazyId y email para la compra' });
   }
-  
+
   try {
-    console.log(`Iniciando compra de NFT lazy mint. ID: ${lazyId}, Email: ${email}`);
-    
     // Precio fijo para los NFTs
     const priceEur = 20; // 20 euros precio fijo
-    
+
     // Crear una sesión de Stripe
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -337,14 +335,15 @@ router.post('/api/payment/lazy-mint', async (req, res) => {
             name: `NFT Nani Boronat (#${lazyId})`,
             description: 'NFT Exclusivo de Nani Boronat - Edición Limitada',
             images: ['https://naniboronat.com/wp-content/uploads/2023/11/naniboronat.png'], // imagen genérica
+            metadata: { lazyId }
           },
-          unit_amount: priceEur * 100, // Convertir a céntimos
+          unit_amount: priceEur * 100, // 20€ en céntimos
         },
         quantity: 1,
       }],
       mode: 'payment',
       success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/nft-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/lazy-mint`,
+      cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/comunidad`,
       customer_email: email,
       metadata: {
         lazyId,
@@ -353,7 +352,7 @@ router.post('/api/payment/lazy-mint', async (req, res) => {
         useFixedPrice: 'true'
       }
     });
-    
+
     return res.status(200).json({ url: session.url, sessionId: session.id });
   } catch (error) {
     console.error('Error creando la sesión de Stripe para lazy mint:', error);

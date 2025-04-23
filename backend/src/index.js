@@ -7,7 +7,7 @@ import path from 'path';
 
 // Rutas
 const paymentRoutes = require('./routes/payment');
-const productRoutes = require('./routes/product');
+const productsApi = require('./routes/products');
 const nftRoutes = require('./routes/nft');
 
 // Configuración inicial
@@ -15,8 +15,32 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Middleware general de CORS
-app.use(cors());
+// Middleware CORS seguro para producción
+const allowedOrigins = [
+  'https://naniboron.web.app',
+  'https://nani-boronat.vercel.app',
+  'http://localhost:3000',
+];
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (process.env.NODE_ENV === 'production') {
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+  } else {
+    // En desarrollo, permite cualquier origen
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization,stripe-signature');
+  // Permitir cookies si lo necesitas:
+  // res.setHeader('Access-Control-Allow-Credentials', 'true');
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
 
 // Middleware específico para webhooks de Stripe
 app.use((req, res, next) => {
@@ -53,7 +77,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Configurar rutas
 app.use(paymentRoutes);
-app.use(productRoutes);
+productsApi(app);
 app.use(nftRoutes);
 
 // Ruta de verificación
