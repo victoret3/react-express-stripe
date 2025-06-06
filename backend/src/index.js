@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 5001;
 
 // Middleware CORS seguro para producción
 const allowedOrigins = [
-  'https://naniboron.web.app',
+  'https://naniboronat.com',
   'https://nani-boronat.vercel.app',
   'http://localhost:3000',
 ];

@@ -63,6 +63,7 @@ export default async (req, res) => {
             lazyId: metadata.lazyId,
             walletAddress: metadata.walletAddress,
             contractAddress: metadata.contractAddress,
+            sessionId: session.id, // <-- ¡IMPORTANTE! Así mint-status funciona con sessionId
             createdAt: new Date(),
             email: session.customer_email || '',
             status: 'pending'

@@ -8,7 +8,7 @@ dotenv.config();
 const configureServer = (app) => {
   // 1) CORS - Configuración ampliada
   const allowedOrigins = [
-    'https://naniboron.web.app',
+    'https://naniboronat.com',
     'https://nani-boronat.vercel.app',
     'https://nani-boronat-api.vercel.app',
     'http://localhost:3000',

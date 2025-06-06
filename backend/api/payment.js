@@ -119,8 +119,8 @@ router.post('/session-initiate', async (req, res) => {
     console.log('URLs de redirección originales:', { successUrl, cancelUrl });
     
     // Si no se proporcionan URLs o son incorrectas, usar valores por defecto
-    const finalSuccessUrl = successUrl || 'https://naniboron.web.app/success?session_id={CHECKOUT_SESSION_ID}';
-    const finalCancelUrl = cancelUrl || 'https://naniboron.web.app/tienda-online';
+    const finalSuccessUrl = successUrl || 'https://naniboronat.com/success?session_id={CHECKOUT_SESSION_ID}';
+    const finalCancelUrl = cancelUrl || 'https://naniboronat.com/tienda-online';
     
     console.log('URLs de redirección finales:', { finalSuccessUrl, finalCancelUrl });
 
@@ -285,8 +285,8 @@ router.get('/lazy-mint-direct', async (req, res) => {
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL || 'https://naniboron.web.app'}/nft-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL || 'https://naniboron.web.app'}/comunidad`,
+      success_url: `${process.env.FRONTEND_URL || 'https://naniboronat.com'}/nft-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL || 'https://naniboronat.com'}/comunidad`,
       metadata: {
         lazyId,
         metadataUrl,

@@ -38,25 +38,53 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const finalSuccessUrl = successUrl || 'https://naniboron.web.app/success?session_id={CHECKOUT_SESSION_ID}';
-  const finalCancelUrl = cancelUrl || 'https://naniboron.web.app/tienda-online';
+  const finalSuccessUrl = successUrl || 'https://naniboronat.com/success?session_id={CHECKOUT_SESSION_ID}';
+  const finalCancelUrl = cancelUrl || 'https://naniboronat.com/tienda-online';
 
   try {
     // LOG: Mostrar cómo llegan los lineItems del frontend
     console.log('🟠 lineItems recibidos del frontend:', JSON.stringify(lineItems, null, 2));
     // Añadir mongoProductId a cada line_item.metadata si no está
-    const lineItemsWithMongoId = lineItems.map(item => {
-      // Inicializa estructuras si no existen
-      item.price_data = item.price_data || {};
-      item.price_data.product_data = item.price_data.product_data || {};
-      item.price_data.product_data.metadata = item.price_data.product_data.metadata || {};
-      // Compatibilidad: añade mongoProductId si existe
-      if (item.mongoProductId) {
-        item.price_data.product_data.metadata.mongoProductId = item.mongoProductId;
+    // Función recursiva para convertir cualquier unit_amount decimal a entero (céntimos)
+function fixUnitAmount(obj) {
+  if (obj && typeof obj === 'object') {
+    for (const key in obj) {
+      if (key === 'unit_amount' && obj[key] !== undefined) {
+        const original = obj[key];
+        let value = Number(obj[key]);
+        // Si es decimal o menor de 100, multiplica por 100 y redondea
+        // SIEMPRE multiplica por 100, sin importar el formato
+if (typeof obj[key] === 'string') {
+  value = Number(obj[key]);
+}
+if (isNaN(value)) {
+  throw new Error(`unit_amount inválido: ${obj[key]}`);
+}
+value = parseInt(Number(value).toFixed(2).replace('.', ''), 10);
+obj[key] = value;
+console.log(`[FIX][rec] unit_amount original: ${original} -> final: ${value}`);
+      } else if (typeof obj[key] === 'object') {
+        fixUnitAmount(obj[key]);
       }
-      // NO añadir item.price_data.metadata, Stripe no lo permite
-      return item;
-    });
+    }
+  }
+  return obj;
+}
+
+console.log('🟡 lineItems recibidos del frontend (ANTES DE FIX):', JSON.stringify(lineItems, null, 2));
+const lineItemsWithMongoId = lineItems.map(item => {
+  // Inicializa estructuras si no existen
+  item.price_data = item.price_data || {};
+  item.price_data.product_data = item.price_data.product_data || {};
+  item.price_data.product_data.metadata = item.price_data.product_data.metadata || {};
+  // Compatibilidad: añade mongoProductId si existe
+  if (item.mongoProductId) {
+    item.price_data.product_data.metadata.mongoProductId = item.mongoProductId;
+  }
+  // Aplica fix recursivo a todo el item
+  return fixUnitAmount(item);
+});
+console.log('🟢 unit_amount enviados a Stripe (DESPUÉS DE FIX):', lineItemsWithMongoId.map(i => i.price_data?.unit_amount || i.unit_amount));
     // LOG: Mostrar cómo quedan los lineItems que se envían a Stripe
     console.log('🔵 lineItems enviados a Stripe:', JSON.stringify(lineItemsWithMongoId, null, 2));
     const session = await stripe.checkout.sessions.create({

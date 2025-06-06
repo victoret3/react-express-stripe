@@ -40,6 +40,7 @@ const paymentRoutes = require('./payment');
 app.use('/api/payment', paymentRoutes);
 
 
+
   // Conectar a MongoDB usando la variable de entorno
   if (process.env.MONGO_URI) {
     mongoose.connect(process.env.MONGO_URI)

@@ -32,8 +32,8 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // Precio fijo para los NFTs (ajusta si es necesario)
-  const priceEur = 20;
+  // Precio dinámico recibido del frontend o valor por defecto
+  const priceEur = typeof body.priceEur === 'number' ? body.priceEur : 20;
   const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
   try {
