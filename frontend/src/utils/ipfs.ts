@@ -10,7 +10,7 @@ export interface PinataConfig {
 
 // Configuración de Pinata IPFS
 const PINATA_JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIzZTNiMzViNS0yY2MyLTQzZjEtYjBlZC02NjViNDgxMGUwYTIiLCJlbWFpbCI6InZjdHIucHJ6Ljg5QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6IkZSQTEifSx7ImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxLCJpZCI6Ik5ZQzEifV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI0ZDY2YjQ5YzNmMTg3ZTAzMTI2YyIsInNjb3BlZEtleVNlY3JldCI6ImRlMGI4ZmY2YmQ4NWE4NjQ3YzdkNDFkN2U5M2Q2MTNlZTY1MDFmMDZiYjEyZmNkM2I5NDQ5YmRkMDMzYmY4MGMiLCJleHAiOjE3NzYxOTU5OTh9.9oEvnq2WJFpma0AdxLs4RiBz4aqpAcC4ovVGXjckfbU";
-const PINATA_API_URL = "https://api.pinata.cloud";
+const PINATA_API_URL = process.env.REACT_APP_IPFS_API_URL || "https://api.pinata.cloud";
 
 console.log('Environment:', process.env.NODE_ENV);
 console.log('Pinata JWT configurado correctamente');
@@ -19,15 +19,13 @@ console.log('Pinata JWT configurado correctamente');
 export const PLACEHOLDER_IMAGE = "/placeholder-nft.png";
 
 // Lista de gateways IPFS
-export const IPFS_GATEWAYS = [
+export const IPFS_GATEWAYS = process.env.REACT_APP_IPFS_GATEWAYS ? JSON.parse(process.env.REACT_APP_IPFS_GATEWAYS) : [
   'https://ipfs.io/ipfs/',
-  'https://gateway.pinata.cloud/ipfs/',
   'https://cloudflare-ipfs.com/ipfs/',
   'https://ipfs.infura.io/ipfs/',
   'https://dweb.link/ipfs/',
   'https://nftstorage.link/ipfs/',
-  'https://ipfs-gateway.cloud/ipfs/',
-  'https://dweb.link/ipfs/'
+  'https://ipfs-gateway.cloud/ipfs/'
 ];
 
 // Gateway actual (podría guardarse en localStorage para persistencia)
@@ -531,83 +529,109 @@ export const getIpfsHttpUrl = (url: string, gatewayIndex = 0): string => {
 };
 
 /**
- * Obtiene una URL HTTP para un CID de IPFS
- * @param cid CID o URL de IPFS
- * @returns URL HTTP
+ * Convierte una URI de IPFS a una URL HTTP
+ * @param ipfsUri URI de IPFS (ipfs://CID o simplemente el CID)
+ * @returns URL HTTP para acceder al recurso
  */
-export const getIPFSUrl = (cid: string): string => {
-  if (!cid) return PLACEHOLDER_IMAGE;
+export const getIPFSUrl = (ipfsUri: string): string => {
+  // console.log("Convirtiendo URI IPFS:", ipfsUri);
   
   try {
-    // Si ya es una URL HTTP, devolverla
-    if (cid.startsWith('http')) return cid;
+    if (!ipfsUri) return PLACEHOLDER_IMAGE;
     
-    // Si es una URL IPFS con problemas de formato, limpiarla
-    if (cid.includes('ipfs://ipfs://')) {
-      cid = cid.replace('ipfs://ipfs://', 'ipfs://');
+    let cid: string;
+    
+    // Extraer el CID de diferentes formatos de URI IPFS
+    if (ipfsUri.startsWith('ipfs://')) {
+      cid = ipfsUri.replace('ipfs://', '');
+    } else if (ipfsUri.startsWith('https://')) {
+      // Si ya es una URL http(s), devolver tal cual
+      console.log("Ya es una URL HTTP, devolviendo directamente:", ipfsUri);
+      return ipfsUri;
+    } else if (ipfsUri.startsWith('Qm') || ipfsUri.startsWith('bafy')) {
+      // Parece un CID directamente
+      cid = ipfsUri;
+    } else {
+      console.warn("Formato de URI IPFS no reconocido:", ipfsUri);
+      return PLACEHOLDER_IMAGE;
     }
     
-    // Si es una URL IPFS normal, extraer el CID
-    const cleanCid = cid.startsWith('ipfs://') ? cid.replace('ipfs://', '') : cid;
+    // Usar gateway actual para generar URL
+    const gateway = IPFS_GATEWAYS[currentGatewayIndex];
+    const url = `${gateway}${cid}`;
+    // console.log("URL IPFS generada:", url);
     
-    // Agregar timestamp para evitar problemas de caché
-    const timestamp = Date.now();
-    return `${IPFS_GATEWAYS[0]}${cleanCid}?_t=${timestamp}`;
+    return url;
   } catch (error) {
-    console.error(`Error al procesar CID: ${cid}`, error);
+    console.error("Error procesando URI IPFS:", error);
     return PLACEHOLDER_IMAGE;
   }
 };
 
 /**
- * Función para obtener un JSON desde una URL de IPFS
- * @param ipfsUrl URL de IPFS (puede ser ipfs://, http://ipfs.io o cualquier gateway)
- * @returns Datos del JSON
+ * Cambia a la siguiente gateway IPFS en caso de error
+ * @returns Nueva URL para el mismo CID
  */
-export const fetchIPFSJSON = async (ipfsUrl: string): Promise<any> => {
+export const rotateGateway = (cid: string): string => {
+  currentGatewayIndex = (currentGatewayIndex + 1) % IPFS_GATEWAYS.length;
+  return getIPFSUrl(`ipfs://${cid}`);
+};
+
+/**
+ * Obtiene y parsea el contenido JSON de una URI IPFS
+ * @param ipfsUri URI de IPFS
+ * @returns Objeto JSON parseado
+ */
+export async function fetchIPFSJSON(ipfsUri: string): Promise<any> {
+  console.log("Intentando obtener JSON de IPFS:", ipfsUri);
+
+  let attempt = 0;
+  let maxAttempts = IPFS_GATEWAYS.length * 2;
+  let lastError;
+
+  // Si ipfsUri es una URL HTTP(s) a un gateway específico, extraer el CID para usarlo con los gateways públicos
+  let cid = '';
   try {
-    // Convertir URL de IPFS a HTTP si es necesario
-    let httpUrl = ipfsUrl;
-    
-    if (ipfsUrl.startsWith('ipfs://')) {
-      // Usar el primer gateway de la lista para convertir la URL
-      const cidOnly = ipfsUrl.replace('ipfs://', '');
-      httpUrl = `${IPFS_GATEWAYS[0]}${cidOnly}`;
-      console.log(`Convertida URL IPFS a HTTP: ${httpUrl}`);
-    }
-    
-    // Realizar la solicitud HTTP
-    console.log(`Fetching IPFS JSON from: ${httpUrl}`);
-    const response = await axios.get(httpUrl);
-    
-    // Si el JSON contiene una URL IPFS para la imagen, asegurarse de que tenga el formato correcto
-    if (response.data && response.data.image) {
-      // Si la imagen ya es una URL HTTP, dejarla como está
-      if (response.data.image.startsWith('http')) {
-        // No hacer nada, ya es HTTP
-      } 
-      // Si la imagen tiene el prefijo ipfs://, mantenerlo así para compatibilidad con OpenSea
-      // pero asegurarse de que no tenga dobles 'ipfs://'
-      else if (response.data.image.startsWith('ipfs://')) {
-        if (response.data.image.includes('ipfs://ipfs://')) {
-          response.data.image = response.data.image.replace('ipfs://ipfs://', 'ipfs://');
-        }
-        // Dejamos ipfs:// para OpenSea, pero también lo mostramos con HTTP para depuración
-        console.log(`URL de imagen IPFS mantenida para OpenSea: ${response.data.image}`);
-        console.log(`Versión HTTP para visualización: ${getIPFSUrl(response.data.image)}`);
-      } 
-      // Si es un CID sin prefijo, agregar prefijo 'ipfs://' para OpenSea
-      else if (response.data.image.startsWith('Qm') || response.data.image.startsWith('baf')) {
-        const originalImage = response.data.image;
-        response.data.image = `ipfs://${response.data.image}`;
-        console.log(`CID sin prefijo convertido a formato OpenSea: ${originalImage} -> ${response.data.image}`);
+    if (ipfsUri.startsWith('http://') || ipfsUri.startsWith('https://')) {
+      // Buscar el patrón /ipfs/<cid>
+      const match = ipfsUri.match(/\/ipfs\/([a-zA-Z0-9]+)/);
+      if (match && match[1]) {
+        cid = match[1];
+      } else {
+        // Si no se encuentra, intentar extraer desde el final de la URL
+        cid = ipfsUri.split('/').pop() || '';
       }
+    } else {
+      cid = getCIDFromUrl(ipfsUri);
     }
-    
-    return response.data;
-  } catch (error: unknown) {
-    console.error('Error fetching from IPFS:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    throw new Error(`Failed to fetch from IPFS: ${errorMessage}`);
+  } catch (e) {
+    cid = getCIDFromUrl(ipfsUri);
   }
+
+  if (!cid) {
+    throw new Error(`No se pudo extraer el CID de la URI: ${ipfsUri}`);
+  }
+
+  while (attempt < maxAttempts) {
+    const gatewayIndex = attempt % IPFS_GATEWAYS.length;
+    const url = getIpfsHttpUrl(cid, gatewayIndex);
+    try {
+      console.log(`Intento ${attempt + 1}/${maxAttempts} - Obteniendo datos de:`, url);
+      const response = await axios.get(url, { timeout: 7000 });
+      if (response.data) {
+        console.log("Datos IPFS obtenidos exitosamente:", response.data);
+        return response.data;
+      } else {
+        throw new Error("Respuesta vacía");
+      }
+    } catch (error) {
+      lastError = error;
+      console.warn(`Error en intento ${attempt + 1}:`, error);
+      attempt++;
+      await new Promise(res => setTimeout(res, 350));
+    }
+  }
+  
+  console.error(`No se pudo obtener el JSON después de ${maxAttempts} intentos`);
+  return null;
 }; 

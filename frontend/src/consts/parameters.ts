@@ -5,7 +5,7 @@
 export const contractConst = "0x436492DBc2E30E56FaC8F2297BD1964833c0687d";
 
 // The name of the chain your contract is deployed to.
-export const chainConst = "Arbitrum Sepolia";
+export const chainConst = "Polygon Mainnet";
 
 // It is IMPORTANT to provide your own API key to use the thirdweb SDK and infrastructure.
 // Please ensure that you define the correct domain for your API key from the API settings page.
@@ -19,13 +19,13 @@ export const primaryColorConst = "blue";
 export const themeConst = "dark";
 
 export const CHAIN = {
-  chainId: 421614,
-  chainName: "Arbitrum Sepolia",
+  chainId: 137,
+  chainName: "Polygon Mainnet",
   nativeCurrency: {
-    name: "ETH",
-    symbol: "ETH",
+    name: "MATIC",
+    symbol: "MATIC",
     decimals: 18
   },
-  rpcUrls: ["https://sepolia-rollup.arbitrum.io/rpc"],
-  blockExplorerUrls: ["https://sepolia.arbiscan.io/"]
+  rpcUrls: [process.env.VITE_RPC_URL],
+  blockExplorerUrls: ["https://polygonscan.com"]
 };

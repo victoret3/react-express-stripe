@@ -31,7 +31,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     } else if (location.pathname.includes('/sobre-mi')) {
       bgColor = 'black';          // Negro para "Sobre Mi"
       filterStyle = 'brightness(0) invert(1)';
-    } else if (location.pathname.includes('/lazy-mint')) {
+    } else if (location.pathname.includes('/comunidad')) {
       bgColor = 'brand.accent4';  // Naranja claro para NFTs
       filterStyle = 'brightness(0) invert(1)';
     } else if (location.pathname.includes('/coleccion/')) {
@@ -59,14 +59,16 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         position="absolute"
         top="0"
         right="0"
+        left="0"
         w="100%"
+        maxW="100%"
         zIndex={10}
-        p={4}
-        py={{ base: '1.2rem', md: '1rem' }}
-        px="2rem"
+        minH="80px"
+        px={{ base: "1rem", md: "2rem" }}
         bg={responsiveBgColor}
         boxShadow={responsiveBgColor !== 'transparent' ? '0 2px 4px rgba(0,0,0,0.3)' : 'none'}
         gap="1rem"
+        overflow="hidden"
       >
         {/* Imagen de firma, alineada a la izquierda */}
         <Box position="absolute" top={{ base: '-1.5rem', sm: '-1.5rem', md: '-1.5rem' }} left={{ base: '1rem', md: '2rem' }} display={{ base: 'block', md: 'none' }}>

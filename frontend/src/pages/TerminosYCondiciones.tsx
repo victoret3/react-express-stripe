@@ -440,8 +440,7 @@ const TerminosYCondiciones: React.FC = () => {
       <Text mb={4}>
         Estos Términos de Servicio y cualquier acuerdo por separado mediante el
         cual le proporcionamos Servicios se regirán e interpretarán de conformidad
-        con las leyes de avenida poeta manuel benitez carrasco, 6 Sevilla Sevilla
-        ES 41013.
+        con las leyes de España.
       </Text>
 
       <Heading as="h2" size="md" mb={3}>

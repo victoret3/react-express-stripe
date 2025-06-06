@@ -105,7 +105,7 @@ const AvisoLegal: React.FC = () => {
       <Text mb={4}>
         Si tiene alguna pregunta o necesita más ayuda en relación con este aviso
         legal o cualquier otro asunto, no dude en ponerse en contacto con nosotros
-        por correo electrónico en @gmail.com o a través de la función de chat
+        por correo electrónico en naniboronat@gmail.com o a través de la función de chat
         disponible en nuestro sitio web.
       </Text>
 
@@ -114,9 +114,9 @@ const AvisoLegal: React.FC = () => {
       </Text>
 
       <Text mb={4}>
-        Gestion Art Technology S.L. B09802554<br />
-        Camino de los Palacios, 12, 41500, Alcalá de Guadaira, Sevilla, España<br />
-        tienda.antoniogarciavillaran.es
+        Nani Boronat
+        
+       
       </Text>
     </Box>
   );

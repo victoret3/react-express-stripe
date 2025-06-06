@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -10,7 +10,12 @@ import {
   Button,
   Container,
   Stack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  IconButton,
 } from "@chakra-ui/react";
+import { CloseIcon } from "@chakra-ui/icons";
 import { collections } from "../config/CollectionConfig";
 
 // -----------------------------------------------------
@@ -47,6 +52,11 @@ function extraerID(url: string): string {
 // -----------------------------------------------------
 const CollectionPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
+
+  const [modalImage, setModalImage] = useState<string | null>(null);
+  const openModal = (url: string) => setModalImage(url);
+  const closeModal = () => setModalImage(null);
+
   const collection = collections.find((col) => col.slug === slug);
 
   if (!collection) {
@@ -58,17 +68,49 @@ const CollectionPage: React.FC = () => {
     );
   }
 
-  // Si la colección es "centinelas" o "alhambra-shirvanshah",
-  // usamos el layout especializado en vídeos
-  if (
-    collection.slug === "centinelas" ||
-    collection.slug === "alhambra-shirvanshah"
-  ) {
-    return <CentinelasLayout collection={collection} />;
-  }
+  const LayoutComponent =
+    collection.slug === "centinelas" || collection.slug === "alhambra-shirvanshah"
+      ? CentinelasLayout
+      : DefaultLayout;
 
-  // Para el resto, un layout genérico
-  return <DefaultLayout collection={collection} />;
+  return (
+    <>
+      <LayoutComponent collection={collection} openModal={openModal} />
+
+      {/* Modal de imagen ampliada */}
+      <Modal isOpen={!!modalImage} onClose={closeModal} size="xl" isCentered>
+        <ModalOverlay />
+        <ModalContent
+          bg="transparent"
+          boxShadow="none"
+          maxW="90vw"
+          maxH="90vh"
+          position="relative"
+        >
+          <IconButton
+            icon={<CloseIcon />}
+            aria-label="Cerrar"
+            position="absolute"
+            top={2}
+            right={2}
+            bg="whiteAlpha.800"
+            _hover={{ bg: "whiteAlpha.900" }}
+            onClick={closeModal}
+          />
+          {modalImage && (
+            <Image
+              src={modalImage}
+              alt="Imagen ampliada"
+              objectFit="contain"
+              maxH="80vh"
+              width="100%"
+              borderRadius="md"
+            />
+          )}
+        </ModalContent>
+      </Modal>
+    </>
+  );
 };
 
 export default CollectionPage;
@@ -76,7 +118,13 @@ export default CollectionPage;
 // -----------------------------------------------------
 // LAYOUT GENÉRICO para el resto de colecciones
 // -----------------------------------------------------
-function DefaultLayout({ collection }: { collection: Collection }) {
+function DefaultLayout({
+  collection,
+  openModal,
+}: {
+  collection: Collection;
+  openModal: (url: string) => void;
+}) {
   const navigate = useNavigate();
 
   return (
@@ -129,7 +177,11 @@ function DefaultLayout({ collection }: { collection: Collection }) {
         {/* Galería sin filtrar categorías (pinta todo tal cual) */}
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8} mt={8}>
           {collection.obras.map((obra, index) => (
-            <CardItem key={index} obra={obra} />
+            <CardItem
+              key={index}
+              obra={obra}
+              onClick={obra.imagen ? () => openModal(obra.imagen!) : undefined}
+            />
           ))}
         </SimpleGrid>
 
@@ -144,7 +196,13 @@ function DefaultLayout({ collection }: { collection: Collection }) {
 // LAYOUT para "centinelas" y "alhambra-shirvanshah"
 // (separando las obras por categoría, incluyendo videos)
 // -----------------------------------------------------
-function CentinelasLayout({ collection }: { collection: Collection }) {
+function CentinelasLayout({
+  collection,
+  openModal,
+}: {
+  collection: Collection;
+  openModal: (url: string) => void;
+}) {
   const navigate = useNavigate();
 
   // Agrupar por categoría
@@ -229,7 +287,11 @@ function CentinelasLayout({ collection }: { collection: Collection }) {
             </Heading>
             <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
               {obrasMapas.map((obra, i) => (
-                <CardItem key={i} obra={obra} />
+                <CardItem
+                  key={i}
+                  obra={obra}
+                  onClick={obra.imagen ? () => openModal(obra.imagen!) : undefined}
+                />
               ))}
             </SimpleGrid>
           </Box>
@@ -243,7 +305,11 @@ function CentinelasLayout({ collection }: { collection: Collection }) {
             </Heading>
             <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
               {obrasFotos.map((obra, i) => (
-                <CardItem key={i} obra={obra} />
+                <CardItem
+                  key={i}
+                  obra={obra}
+                  onClick={obra.imagen ? () => openModal(obra.imagen!) : undefined}
+                />
               ))}
             </SimpleGrid>
           </Box>
@@ -257,7 +323,11 @@ function CentinelasLayout({ collection }: { collection: Collection }) {
             </Heading>
             <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
               {obrasEscudos.map((obra, i) => (
-                <CardItem key={i} obra={obra} />
+                <CardItem
+                  key={i}
+                  obra={obra}
+                  onClick={obra.imagen ? () => openModal(obra.imagen!) : undefined}
+                />
               ))}
             </SimpleGrid>
           </Box>
@@ -271,7 +341,11 @@ function CentinelasLayout({ collection }: { collection: Collection }) {
             </Heading>
             <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
               {obrasExpos.map((obra, i) => (
-                <CardItem key={i} obra={obra} />
+                <CardItem
+                  key={i}
+                  obra={obra}
+                  onClick={obra.imagen ? () => openModal(obra.imagen!) : undefined}
+                />
               ))}
             </SimpleGrid>
           </Box>
@@ -287,7 +361,13 @@ function CentinelasLayout({ collection }: { collection: Collection }) {
 // -----------------------------------------------------
 // CardItem: tarjeta con imagen (si la obra NO es vídeo)
 // -----------------------------------------------------
-function CardItem({ obra }: { obra: Obra }) {
+function CardItem({
+  obra,
+  onClick,
+}: {
+  obra: Obra;
+  onClick?: () => void;
+}) {
   return (
     <Box
       bg="white"
@@ -296,6 +376,8 @@ function CardItem({ obra }: { obra: Obra }) {
       overflow="hidden"
       transition="transform 0.2s"
       _hover={{ transform: "scale(1.02)" }}
+      onClick={onClick}
+      cursor={onClick ? "pointer" : "default"}
     >
       {obra.imagen && (
         <Image

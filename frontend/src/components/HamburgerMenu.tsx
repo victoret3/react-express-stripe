@@ -8,13 +8,13 @@ import {
   DrawerCloseButton,
   VStack,
   Box,
-  SimpleGrid,
+  Flex,
   Link as ChakraLink,
   useBreakpointValue
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { Link } from 'react-router-dom';
-import { FaLinkedin, FaInstagram, FaTwitter, FaEnvelope } from 'react-icons/fa';
+import { FaLinkedin, FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 
 interface HamburgerMenuProps {
   filter?: string;
@@ -70,7 +70,7 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ filter }) => {
         <DrawerOverlay />
         <DrawerContent
           h="100vh"
-          maxW={{ base: '100vw', lg: '30rem' }}
+          maxW={{ base: '85vw', sm: '400px', lg: '30rem' }}
           bg="black"
           color="white"
         >
@@ -130,7 +130,7 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ filter }) => {
                   Shop
                 </Box>
               </Link>
-              <Link to="/lazy-mint" onClick={closeDrawer}>
+              <Link to="/comunidad" onClick={closeDrawer}>
                 <Box
                   as="span"
                   bg="brand.accent4" // Fondo normal naranja claro
@@ -150,53 +150,48 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ filter }) => {
             </VStack>
           </DrawerBody>
 
-          <SimpleGrid
-            columns={{ base: 2, md: 4 }}
-            spacing={4}
-            mb={{ base: '2rem', md: '1rem' }}
-            justifyContent="center"
-            alignItems="center"
-            textAlign="center"
-            p={4}
-            w="100%"
-          >
+          <Flex justify="center" align="center" mb={{ base: '2rem', md: '1rem' }} gap={6} p={4} w="100%">
             <ChakraLink
-              href="https://linkedin.com"
+              href="https://www.facebook.com/NaniBoronat/"
               isExternal
-              fontSize="1.5rem"
-              textAlign="center"
+              fontSize="2.2rem"
+              mx={1}
               _hover={{ color: "brand.accent2" }}
+              aria-label="Facebook"
+            >
+              <FaFacebook />
+            </ChakraLink>
+            <ChakraLink
+              href="https://www.youtube.com/@naniboronat68"
+              isExternal
+              fontSize="2.2rem"
+              mx={1}
+              _hover={{ color: "brand.accent2" }}
+              aria-label="YouTube"
+            >
+              <FaYoutube />
+            </ChakraLink>
+            <ChakraLink
+              href="https://linkedin.com/in/nani-boronat-77644959"
+              isExternal
+              fontSize="2.2rem"
+              mx={1}
+              _hover={{ color: "brand.accent2" }}
+              aria-label="LinkedIn"
             >
               <FaLinkedin />
             </ChakraLink>
             <ChakraLink
-              href="https://instagram.com"
+              href="https://www.instagram.com/naniboronat/"
               isExternal
-              fontSize="1.5rem"
-              textAlign="center"
+              fontSize="2.2rem"
+              mx={1}
               _hover={{ color: "brand.accent2" }}
+              aria-label="Instagram"
             >
               <FaInstagram />
             </ChakraLink>
-            <ChakraLink
-              href="https://twitter.com"
-              isExternal
-              fontSize="1.5rem"
-              textAlign="center"
-              _hover={{ color: "brand.accent2" }}
-            >
-              <FaTwitter />
-            </ChakraLink>
-            <ChakraLink
-              href="mailto:contacto@correo.com"
-              isExternal
-              fontSize="1.5rem"
-              textAlign="center"
-              _hover={{ color: "brand.accent2" }}
-            >
-              <FaEnvelope />
-            </ChakraLink>
-          </SimpleGrid>
+          </Flex>
         </DrawerContent>
       </Drawer>
     </>

@@ -87,7 +87,10 @@ const CartSummary: React.FC<CartSummaryProps> = ({ filter }) => {
       const lineItems = cart.map((item) => ({
         price_data: {
           currency: 'eur',
-          unit_amount: Math.round((item.price || 0) * 100),
+          // Asegura que unit_amount es entero en céntimos (sin decimales)
+unit_amount: Number.isInteger(item.price) && item.price > 100
+  ? item.price
+  : Math.round((item.price || 0) * 100),
           product_data: {
             name: item.name || 'Producto sin nombre',
             description: item.description || '',
@@ -98,13 +101,13 @@ const CartSummary: React.FC<CartSummaryProps> = ({ filter }) => {
         quantity: 1,
       }));
 
-      const response = await fetch('https://nani-boronat-api.vercel.app/api/payment/session-initiate', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/payment/session-initiate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           lineItems,
-          successUrl: 'https://naniboron.web.app/success?session_id={CHECKOUT_SESSION_ID}',
-          cancelUrl: 'https://naniboron.web.app/tienda-online',
+          successUrl: 'https://naniboronat.com/success?session_id={CHECKOUT_SESSION_ID}',
+          cancelUrl: 'https://naniboronat.com/tienda-online',
         }),
       });
 
@@ -256,6 +259,19 @@ const CartSummary: React.FC<CartSummaryProps> = ({ filter }) => {
                         €{totalAmount.toFixed(2)}
                       </Text>
                     </Flex>
+
+                    <Box 
+                      bg="blue.50" 
+                      p={4} 
+                      borderRadius="md" 
+                      mb={4}
+                      borderLeft="4px solid"
+                      borderColor="blue.400"
+                    >
+                      <Text fontSize="sm" color="gray.700">
+                        <Text as="span" fontWeight="semibold">Importante:</Text> En el siguiente paso detállame tu email. De esta forma me pondré en contacto contigo para agradecerte personalmente la adquisición de una de mis obras y también para concretar la mejor y más segura manera de enviarte la obra.
+                      </Text>
+                    </Box>
 
                     <Button
                       colorScheme="blue"

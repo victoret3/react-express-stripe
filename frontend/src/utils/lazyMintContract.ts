@@ -1,288 +1,182 @@
 import { ethers } from 'ethers';
-import { getCIDFromUrl } from './ipfs';
+import NaniBoronatLazyMintArtifact from '../abis/NaniBoronatLazyMint.json';
 
-// Dirección y ABI del contrato de Lazy Mint
-// Si la variable de entorno no está disponible, usar una dirección de respaldo (ajustar a la dirección correcta)
-const LAZY_MINT_CONTRACT_ADDRESS = process.env.REACT_APP_LAZY_MINT_CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000';
-
-// Log para depuración
-console.log('Usando dirección de contrato Lazy Mint:', LAZY_MINT_CONTRACT_ADDRESS);
-
-// ABI mínimo necesario para interactuar con el contrato de Lazy Mint
-const LAZY_MINT_ABI = [
-  // Función para obtener información de los NFTs disponibles
-  "function getAvailableNFTIds() view returns (string[] memory)",
-  "function getAvailableNFTCount() view returns (uint256)",
-  "function availableNFTs(string memory) view returns (string, uint256, uint256, bool)",
-  "function availableNFTIds(uint256) view returns (string)",
-  
-  // Función para comprar y mintear
-  "function purchaseAndMint(string memory) payable returns (uint256)",
-  
-  // Eventos
-  "event NFTLazyMinted(uint256 indexed tokenId, string indexed lazyId, address indexed owner, string metadataURI, uint256 price)",
-];
+const LAZY_MINT_ABI = NaniBoronatLazyMintArtifact.abi;
 
 /**
- * Obtiene una instancia del contrato de lazy minting
+ * Obtiene una instancia del contrato de lazy minting para una colección
  */
-export const getLazyMintContract = async (signer: ethers.Signer | ethers.providers.Provider) => {
-  if (!LAZY_MINT_CONTRACT_ADDRESS) {
-    throw new Error('La dirección del contrato de lazy minting no está configurada');
-  }
-  
-  return new ethers.Contract(LAZY_MINT_CONTRACT_ADDRESS, LAZY_MINT_ABI, signer);
+export const getLazyMintContract = (
+  collection: { address: string },
+  signerOrProvider: ethers.Signer | ethers.providers.Provider
+) => {
+  if (!collection || !collection.address) throw new Error('Colección o dirección no definida');
+  return new ethers.Contract(collection.address, LAZY_MINT_ABI, signerOrProvider);
 };
 
 /**
- * Obtiene los IDs de los NFTs disponibles para lazy mint
+ * Obtiene los IDs de los NFTs disponibles para lazy mint de una colección
  */
 export const getAvailableNFTIds = async (
-  provider?: ethers.providers.Provider,
+  collection: { address: string },
+  provider: ethers.providers.Provider
+): Promise<string[]> => {
+  const contract = getLazyMintContract(collection, provider);
+  const ids = await contract.getAvailableNFTIds();
+  return ids;
+};
+
+/**
+ * Obtiene la información de todos los NFTs disponibles incluyendo sus metadatos
+ */
+export const getAllAvailableNFTsInfo = async (
+  collection: { address: string },
+  provider: ethers.providers.Provider
 ) => {
-  try {
-    // Usar provider proporcionado o crear uno nuevo
-    const _provider = provider || new ethers.providers.JsonRpcProvider(
-      process.env.REACT_APP_RPC_URL || 'https://sepolia-rollup.arbitrum.io/rpc'
-    );
-    
-    const contract = await getLazyMintContract(_provider);
-    const availableIds = await contract.getAvailableNFTIds();
-    
-    return availableIds;
-  } catch (error) {
-    console.error('Error al obtener NFTs disponibles:', error);
-    throw error;
-  }
+  const contract = getLazyMintContract(collection, provider);
+  const availableIds = await contract.getAvailableNFTIds();
+
+  const nftsWithInfo = await Promise.all(
+    availableIds.map(async (lazyId: string) => {
+      try {
+        // Consulta real al contrato
+        const nft = await contract.availableNFTs(lazyId);
+        return {
+          lazyId,
+          metadataURI: nft.metadataURI,
+          price: ethers.utils.formatEther(nft.price),
+          royaltyPercentage: nft.royaltyPercentage,
+          isActive: nft.isActive,
+        };
+      } catch (err) {
+        console.error(`Error obteniendo información para NFT ${lazyId}:`, err);
+        return null;
+      }
+    })
+  );
+
+  return nftsWithInfo.filter((nft) => nft !== null);
 };
 
 /**
  * Obtiene la información de un NFT disponible para lazy mint
  */
 export const getAvailableNFTInfo = async (
+  collection: { address: string },
   lazyId: string,
-  provider?: ethers.providers.Provider,
+  provider: ethers.providers.Provider
 ) => {
-  try {
-    // Usar provider proporcionado o crear uno nuevo
-    const _provider = provider || new ethers.providers.JsonRpcProvider(
-      process.env.REACT_APP_RPC_URL || 'https://sepolia-rollup.arbitrum.io/rpc'
-    );
-    
-    const contract = await getLazyMintContract(_provider);
-    const nftInfo = await contract.availableNFTs(lazyId);
-    
-    // Verificar que el precio no sea undefined
-    if (!nftInfo || nftInfo.length < 2 || !nftInfo[1]) {
-      console.error('Error: Datos del NFT incompletos:', nftInfo);
-      throw new Error(`No se pudo obtener información completa del NFT ${lazyId}`);
-    }
-    
-    // Asegurar que el precio se convierta correctamente
-    const priceWei = nftInfo[1].toString();
-    console.log(`NFT ${lazyId} - Precio Wei:`, priceWei);
-    
-    return {
-      metadataURI: nftInfo[0],
-      price: ethers.utils.formatEther(nftInfo[1]),
-      priceWei,
-      royaltyPercentage: nftInfo[2].toNumber(),
-      isActive: nftInfo[3]
-    };
-  } catch (error) {
-    console.error(`Error al obtener información del NFT ${lazyId}:`, error);
-    throw error;
-  }
+  const contract = getLazyMintContract(collection, provider);
+  const nft = await contract.availableNFTs(lazyId);
+  return {
+    lazyId,
+    metadataURI: nft.metadataURI,
+    price: ethers.utils.formatEther(nft.price),
+    royaltyPercentage: nft.royaltyPercentage,
+    isActive: nft.isActive,
+  };
 };
 
 /**
- * Compra y mintea un NFT
+ * Compra y mintea un NFT (ejemplo, debe adaptarse a tu contrato real)
  */
+export interface MintResult {
+  success: boolean;
+  tokenId: string | number;
+  [key: string]: any;
+}
+
 export const purchaseAndMintNFT = async (
+  collection: { address: string },
   lazyId: string,
-  signer: ethers.Signer,
-) => {
-  try {
-    const contract = await getLazyMintContract(signer);
-    
-    // Obtener precio
-    const provider = signer.provider;
-    if (!provider) {
-      throw new Error('No se pudo obtener el provider del signer');
+  signer: ethers.Signer
+): Promise<MintResult> => {
+  const contract = getLazyMintContract(collection, signer);
+  // Lógica real de minteo con crypto
+  // 1. Obtener el precio real del NFT desde el contrato
+  const nftInfo = await contract.availableNFTs(lazyId);
+  const price = nftInfo.price;
+
+  // 2. Ejecutar la función de minteo del contrato
+  const tx = await contract.purchaseAndMint(lazyId, { value: price });
+  const receipt = await tx.wait();
+
+  // 3. Extraer el tokenId del evento Transfer
+  let tokenId = null;
+  if (receipt && receipt.events) {
+    const transferEvent = receipt.events.find((e: any) => e.event === 'Transfer');
+    if (transferEvent && transferEvent.args && transferEvent.args.tokenId) {
+      tokenId = transferEvent.args.tokenId.toString();
     }
-    
-    // Importante: pasar el provider explícitamente para evitar undefined
-    const nftInfo = await getAvailableNFTInfo(lazyId, provider);
-    
-    if (!nftInfo.isActive) {
-      throw new Error('Este NFT ya no está disponible');
-    }
-    
-    // Verificar que el precio no sea undefined
-    if (!nftInfo.priceWei) {
-      console.error('Error: priceWei es undefined', nftInfo);
-      throw new Error('No se pudo obtener el precio del NFT');
-    }
-    
-    console.log('Precio del NFT en Wei:', nftInfo.priceWei);
-    
-    // Realizar la transacción
-    const tx = await contract.purchaseAndMint(lazyId, {
-      value: nftInfo.priceWei,
-      gasLimit: 500000,
-    });
-    
-    console.log('Transacción enviada:', tx.hash);
-    
-    // Esperar confirmación
-    const receipt = await tx.wait();
-    console.log('Transacción confirmada:', receipt);
-    
-    // Buscar el evento NFTLazyMinted
-    const event = receipt.events?.find((e: ethers.Event) => e.event === 'NFTLazyMinted');
-    
-    // Agregar registro adicional para depuración
-    console.log('Evento encontrado:', event);
-    
-    // Verificar con más detalle si los argumentos existen y tienen la estructura esperada
-    if (event && event.args && typeof event.args.tokenId !== 'undefined') {
-      try {
-        // Usar try/catch cuando accedemos a toString()
-        const tokenId = event.args.tokenId.toString();
-        console.log('NFT minteado con éxito, token ID:', tokenId);
-        
-        return {
-          success: true,
-          tokenId,
-          transactionHash: tx.hash,
-        };
-      } catch (tokenError) {
-        console.warn('Error al obtener tokenId del evento:', tokenError);
-        return {
-          success: true,
-          tokenId: 'nuevo',
-          transactionHash: tx.hash,
-        };
-      }
-    } else {
-      // Intentar analizar directamente los logs de la transacción para extraer el evento
-      try {
-        console.log('Intentando analizar logs manualmente');
-        console.log('Logs disponibles:', receipt.logs);
-        
-        // Buscar el evento correcto en los logs (normalmente es el primer log emitido por el contrato)
-        const tokenId = 'nuevo';
-        
-        return {
-          success: true,
-          tokenId,
-          transactionHash: tx.hash,
-        };
-      } catch (logError) {
-        console.warn('Error al analizar logs:', logError);
-        
-        // Aún si no encontramos el evento o los args, el NFT probablemente se minteó exitosamente
-        // En este caso, retornamos un éxito con un tokenId genérico
-        console.warn('No se encontró el evento o sus argumentos, pero la transacción se completó');
-        
-        return {
-          success: true,
-          tokenId: 'nuevo',
-          transactionHash: tx.hash,
-        };
-      }
-    }
-  } catch (error) {
-    console.error('Error al comprar y mintear NFT:', error);
-    throw error;
   }
+
+  return {
+    success: !!tokenId,
+    tokenId: tokenId || '',
+  };
+
 };
 
 /**
  * Inicia el proceso de compra de un NFT con tarjeta a través de Stripe
  */
-export const purchaseNFTWithStripe = async (nftId: string, userEmail: string) => {
-  try {
-    // Verificar primero si hay una wallet conectada
-    // @ts-ignore
-    if (!window.ethereum || !(await window.ethereum._metamask?.isUnlocked())) {
-      throw new Error('Necesitas conectar tu wallet antes de iniciar la compra. Por favor conecta Metamask.');
-    }
-
-    // @ts-ignore
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const accounts = await provider.listAccounts();
-    const walletAddress = accounts[0];
-    
-    if (!walletAddress) {
-      throw new Error('No se encontró wallet conectada. Por favor conecta tu wallet antes de continuar.');
-    }
-    
-    console.log('Wallet conectada:', walletAddress);
-
-    // Obtener información del NFT
-    const nftInfo = await getAvailableNFTInfo(nftId);
-    if (!nftInfo) {
-      throw new Error('No se encontró información del NFT');
-    }
-
-    console.log('Metadata URI original:', nftInfo.metadataURI);
-    // Extraer solo el CID sin el prefijo ipfs://
-    const metadataCID = getCIDFromUrl(nftInfo.metadataURI);
-    console.log('CID extraído:', metadataCID);
-
-    // HARDCODEAMOS LA URL CORRECTA - el backend está en Vercel
-    const backendURL = 'https://nani-boronat.vercel.app';
-    console.log('URL del backend CORREGIDA:', backendURL);
-    
-    // Endpoint Stripe
-    const stripeEndpoint = `${backendURL}/api/nft-checkout/session`;
-    console.log('Endpoint Stripe:', stripeEndpoint);
-
-    // Payload mínimo - evitamos información innecesaria 
-    const payload = {
-      lazyId: nftId,
-      walletAddress,
-      email: userEmail,
-      metadataUrl: metadataCID
-    };
-    
-    console.log('Enviando payload simplificado:', payload);
-    
-    // POST básico - sin credentials ni configuración extra
-    const response = await fetch(stripeEndpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-    
-    console.log('Respuesta del servidor:', {
-      status: response.status,
-      statusText: response.statusText,
-      ok: response.ok
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Error en respuesta:', errorText);
-      throw new Error(`Error del servidor: ${response.status} ${response.statusText}`);
-    }
-    
-    const data = await response.json();
-    console.log('Datos recibidos:', data);
-    
-    // Redirigir a la página de pago
-    if (data.url) {
-      console.log('URL de pago:', data.url);
-      window.location.href = data.url;
-      return data;
-    } else {
-      throw new Error('No se recibió URL de pago');
-    }
-  } catch (error) {
-    console.error('Error al comprar NFT con Stripe:', error);
-    throw error;
+export const purchaseNFTWithStripe = async (
+  lazyId: string,
+  email: string,
+  collection: { address: string },
+  walletAddress?: string,
+  metadataUrl?: string,
+  priceEur?: number
+) => {
+  // Aquí deberías hacer una petición a tu backend para iniciar la sesión de pago
+  const body: Record<string, any> = {
+    lazyId,
+    email,
+    contractAddress: collection.address
+  };
+  if (walletAddress) {
+    body.walletAddress = walletAddress;
   }
-}; 
+  if (metadataUrl) {
+    body.metadataUrl = metadataUrl;
+  }
+  if (priceEur) {
+    body.priceEur = priceEur;
+  }
+
+  // LOG para depuración: Verificar que contractAddress y metadata se envían correctamente
+  if (typeof window !== 'undefined' && window.console) {
+    console.log('[DEBUG][purchaseNFTWithStripe] Payload enviado al backend:', JSON.stringify(body, null, 2));
+  }
+
+  // Detectar entorno y construir la URL del backend correctamente
+  let backendUrl = '';
+  if (process.env.REACT_APP_BACKEND_URL) {
+    backendUrl = process.env.REACT_APP_BACKEND_URL;
+  } else if (window.location.hostname === 'localhost') {
+    backendUrl = '';
+  } else {
+    backendUrl = process.env.REACT_APP_API_URL || 'https://nani-boronat-api.vercel.app';
+  }
+
+  const response = await fetch(`${backendUrl}/payment/lazy-mint`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  let session;
+  try {
+    session = await response.json();
+  } catch (e) {
+    throw new Error('Error inesperado al interpretar la respuesta del servidor');
+  }
+
+  if (!response.ok) {
+    throw new Error(session?.error || 'Error al crear la sesión de pago');
+  }
+
+  return { url: session.url };
+};

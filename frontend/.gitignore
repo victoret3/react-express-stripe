@@ -1,4 +1,4 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
+# See [https://help.github.com/ignore-files/](https://help.github.com/ignore-files/) for more about ignoring files.
 
 # dependencies
 /node_modules
@@ -11,6 +11,8 @@
 
 # misc
 .DS_Store
+
+# environment variables
 .env
 .env.local
 .env.development.local
@@ -18,7 +20,21 @@
 .env.production.local
 .env.development
 .env.production
+.env.staging
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Firebase
+.firebase/
+.firebaserc
+
+# Vercel/Netlify
+.vercel
+.netlify
+
+# IDEs
+.vscode/
+.idea/
+*.swp

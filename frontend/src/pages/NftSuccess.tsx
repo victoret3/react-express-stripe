@@ -245,9 +245,9 @@ const NftSuccess: React.FC = () => {
         return;
       }
       
-      const apiUrl = process.env.REACT_APP_API_URL || 'https://naniboronat-backend.vercel.app';
+      const apiUrl = process.env.REACT_APP_API_URL;
       
-      const response = await axios.post(`${apiUrl}/api/claim-nft`, {
+      const response = await axios.post(`${apiUrl}/claim-nft`, {
         sessionId: nftStatus.sessionId,
         walletAddress: walletAddress
       });
@@ -336,7 +336,7 @@ const NftSuccess: React.FC = () => {
             {error}
           </AlertDescription>
         </Alert>
-        <Button colorScheme="blue" onClick={() => navigate('/lazy-mint')}>
+        <Button colorScheme="blue" onClick={() => navigate('/comunidad')}>
           Volver a la colección
         </Button>
       </Box>

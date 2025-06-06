@@ -87,7 +87,7 @@ const SobreMi: React.FC = () => {
           top={{ base: "0rem", md: "0" }}
           
           left={{ base: "0", lg: "0" }}
-          h={{ base: "4rem", lg: "100%" }}
+          h={{ base: "5rem", lg: "100%" }}
           w={{ base: "100%", lg: "7rem" }}
           bg="brand.accent2"
           display="flex"
@@ -120,7 +120,7 @@ const SobreMi: React.FC = () => {
           flexDirection="column"
           alignItems="center"
           px="1rem"
-          width={{ base: "100vw", lg: "55rem" }}
+          width={{ base: "100%", lg: "55rem" }}
         >
           {/* Icono de quotes */}
           <Icon
@@ -169,7 +169,7 @@ const SobreMi: React.FC = () => {
           En 1992 obtiene una beca durante el primer semestre del segundo curso
           que le llevará a estudiar en el Loras College de Dubuque, Iowa. Finaliza
           la carrera de Bellas Artes becado por el programa Erasmus en la
-          Universität Geschamthochschule de Kassel, Alemania. En 1996 inicia una
+          Universität Gesamthochschule de Kassel, Alemania. En 1996 inicia una
           extensa carrera como pintor y escultor, exponiendo tanto individual como
           colectivamente en salas y ferias de España y Portugal, de Alemania,
           Suiza, Holanda y los Estados Unidos. Parte de su obra se encuentra hoy

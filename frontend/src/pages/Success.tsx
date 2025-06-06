@@ -60,12 +60,12 @@ const Success: React.FC = () => {
   const [manualSessionId, setManualSessionId] = useState('');
   
   // Función para actualizar el stock - Solución alternativa
-  const updateProductStock = async (productId: string) => {
+  const updateProductStock = async (productId: string, quantity: number) => {
     try {
-      console.log('Intentando actualizar stock para:', productId);
+      console.log('Intentando actualizar stock para:', productId, 'cantidad:', quantity);
       const response = await axios.post(
         'https://nani-boronat-api.vercel.app/api/payment/update-simple',
-        { productId }
+        { productId, quantity }
       );
       
       console.log('Respuesta actualización stock:', response.data);
@@ -91,7 +91,7 @@ const Success: React.FC = () => {
     try {
       setLoading(true);
       console.log('Requesting order details from API...');
-      const apiUrl = `https://nani-boronat-api.vercel.app/api/payment/order/${sid}`;
+      const apiUrl = `${process.env.REACT_APP_API_URL}/payment/order?sessionId=${sid}`;
       console.log('API URL:', apiUrl);
       
       const response = await axios.get(apiUrl);
@@ -109,7 +109,7 @@ const Success: React.FC = () => {
             // Usamos directamente el mongoProductId si está disponible
             if (item.mongoProductId) {
               console.log(`Producto con ID de MongoDB encontrado: ${item.mongoProductId}`);
-              await updateProductStock(item.mongoProductId);
+              await updateProductStock(item.mongoProductId, item.quantity);
             } else {
               console.log(`Producto sin ID de MongoDB: ${item.id}`);
             }

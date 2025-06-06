@@ -13,6 +13,19 @@ const theme = extendTheme({
         fontWeight: 'normal',
         fontStyle: 'normal',
       },
+      // Fix horizontal overflow
+      'html, body': {
+        overflowX: 'hidden',
+        maxWidth: '100%',
+      },
+      '#root': {
+        overflowX: 'hidden',
+        maxWidth: '100%',
+      },
+      // Ensure all elements use border-box
+      '*, *::before, *::after': {
+        boxSizing: 'border-box',
+      },
     },
   },
   colors: {

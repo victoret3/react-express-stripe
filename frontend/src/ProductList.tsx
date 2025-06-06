@@ -8,7 +8,7 @@ const ProductList: React.FC = () => {
   const { addToCart } = useCart();
 
   useEffect(() => {
-    fetch('https://nani-boronat-api.vercel.app/api/products')
+    fetch(`${process.env.REACT_APP_API_URL}/products`)
       .then((response) => response.json())
       .then((data) => {
         setProducts(data); // Ahora TypeScript entiende que los datos tienen el tipo `Product[]`

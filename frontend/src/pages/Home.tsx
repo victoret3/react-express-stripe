@@ -5,7 +5,7 @@ import firmaImage from '../assets/firmaNani.png';
 
 const Home: React.FC = () => {
   return (
-    <Box position="relative" w="100vw" minH={{ base: '90vh', md: '100vh' }} overflow="hidden">
+    <Box position="relative" w="100%" minH={{ base: '90vh', md: '100vh' }} overflow="hidden">
       {/* Imagen de fondo (portada) */}
       <Box
         position="relative"

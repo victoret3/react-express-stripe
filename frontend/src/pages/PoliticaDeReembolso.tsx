@@ -78,7 +78,7 @@ const PoliticaDeReembolso: React.FC = () => {
         reembolso.
         <br />
         Si ha hecho todo esto y aún no ha recibido el reembolso, póngase en
-        contacto con nosotros en @gmail.com.
+        contacto con nosotros en naniboronat@gmail.com.
       </Text>
 
       <Text mb={4}>
@@ -92,7 +92,7 @@ const PoliticaDeReembolso: React.FC = () => {
       </Heading>
       <Text mb={4}>
         Sólo cambiamos artículos si están defectuosos o dañados. Si necesitas
-        cambiarlo por el mismo artículo, envíanos un email a @gmail.com y envía
+        cambiarlo por el mismo artículo, envíanos un email a naniboronat@gmail.com y envía
         tu artículo a: Fliederweg 4A 85391, Allershausen. Alemania.
       </Text>
 

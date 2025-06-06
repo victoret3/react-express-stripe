@@ -6,24 +6,22 @@ import Layout from "./components/Layout";
 import SobreMi from "./pages/SobreMi";
 import MiObra from "./pages/MiObra";
 import CollectionPage from "./pages/CollectionPage";
+import NFTSuccessPage from './pages/NFTSuccessPage';
+import NftSuccess from './pages/NftSuccess';
+import NFTMintSuccess from './pages/NFTMintSuccess';
 import Cart from "./Cart";
-import NftSuccess from "./pages/NftSuccess";
-import Collections from "./pages/Collections";
 import { CartProvider } from "./CartContext";
 import ScrollToTop from "./components/ScrollToTop";
 import Success from "./pages/Success";
-import Footer from "./components/Footer";
 import TerminosYCondiciones from "./pages/TerminosYCondiciones";
 import PoliticaDeReembolso from "./pages/PoliticaDeReembolso";
 import PoliticaDeEnvio from "./pages/PoliticaDeEnvio";
 import AvisoLegal from "./pages/AvisoLegal";
 import Contacto from "./pages/Contacto";
-import NFTDetailPage from './pages/NFTDetailPage';
-import CollectionDetailPage from './pages/CollectionDetailPage';
-import LazyMintPage from './pages/LazyMintPage';
-import NFTSuccessPage from "./pages/NFTSuccessPage";
-import { switchToCorrectNetwork } from './config/network';
-import { useToast } from "@chakra-ui/react";
+import CollectionMintPage from './pages/CollectionMintPage';
+import Comunidad from './pages/Comunidad';
+import { useToast } from '@chakra-ui/react';
+
 const App: React.FC = () => {
   const toast = useToast();
 
@@ -46,9 +44,6 @@ const App: React.FC = () => {
             });
             return;
           }
-          
-          // Cambiar a la red correcta
-          await switchToCorrectNetwork();
           
           // Solicitar cuentas
           const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
@@ -95,11 +90,11 @@ const App: React.FC = () => {
             <Route path="/mi-obra" element={<MiObra />} />
             <Route path="/coleccion/:slug" element={<CollectionPage />} />
             <Route path="/carrito" element={<Cart />} />
-            <Route path="/collections" element={<Collections />} />
             <Route path="/nft-success" element={<NftSuccess />} />
             <Route path="/success" element={<Success />} />
-            <Route path="/lazy-mint" element={<LazyMintPage />} />
             <Route path="/nft-cancel" element={<Home />} />
+            <Route path="/comunidad" element={<Comunidad />} />
+            <Route path="/comunidad/coleccion/:collectionAddress" element={<CollectionMintPage />} />
 
             {/* Rutas legales */}
             <Route
@@ -113,10 +108,8 @@ const App: React.FC = () => {
             <Route path="/politica-de-envio" element={<PoliticaDeEnvio />} />
             <Route path="/aviso-legal" element={<AvisoLegal />} />
             <Route path="/contacto" element={<Contacto />} />
-
-            {/* Rutas de colecciones */}
-            <Route path="/collection/:collectionId" element={<CollectionDetailPage />} />
-            <Route path="/collection/:collectionAddress/nft/:tokenId" element={<NFTDetailPage />} />
+            {/* Ruta para el success de mint NFT */}
+            <Route path="/mint/:contractAddress" element={<NFTMintSuccess />} />
           </Routes>
         </Layout>
       </Router>

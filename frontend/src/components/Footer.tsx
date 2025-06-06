@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
             <FooterLink to="/tienda-online">Tienda</FooterLink>
             <FooterLink to="/sobre-mi">Sobre Mí</FooterLink>
             <FooterLink to="/mi-obra">Mi Obra</FooterLink>
-            <FooterLink to="/lazy-mint">NFTs</FooterLink>
+            <FooterLink to="/comunidad">Comunidad NFT</FooterLink>
           </Stack>
 
           {/* Legal */}
@@ -75,7 +75,7 @@ const Footer: React.FC = () => {
             </Text>
             <FooterLink to="/contacto">Contacto</FooterLink>
             <Text fontSize="sm" color="gray.400" mt={2}>
-              info@naniboronat.com
+              naniboronat@gmail.com
             </Text>
             <Text fontSize="sm" color="gray.400">
               +34 612 34 56 78

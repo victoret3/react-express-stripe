@@ -394,12 +394,15 @@ import mapa08 from "../assets/Obras/Centinelas/Mapas/mapas08.jpg";
 import mapa09 from "../assets/Obras/Centinelas/Mapas/mapas09.jpg";
 import mapa10 from "../assets/Obras/Centinelas/Mapas/mapas10.jpg";
 import mapa11 from "../assets/Obras/Centinelas/Mapas/mapas11.jpg";
-import image1 from "../assets/Obras/Alhambra/03.jpg"
-import image2 from "../assets/Obras/Alhambra/04.jpg"  
-import image3 from "../assets/Obras/Alhambra/05.jpg"
-import image4 from "../assets/Obras/Alhambra/dlaas01.jpg" 
-import image5 from "../assets/Obras/Alhambra/dlaas03.jpg"
-import image6 from "../assets/Obras/Alhambra/dlaas04.jpg"
+import image1 from "../assets/Obras/Alhambra/dlaas01.jpg";
+import image2 from "../assets/Obras/Alhambra/dlaas02.jpg";
+import image3 from "../assets/Obras/Alhambra/dlaas03.jpg";
+import image4 from "../assets/Obras/Alhambra/dlaas04.jpeg";
+import image5 from "../assets/Obras/Alhambra/dlaas05.jpg";
+import image6 from "../assets/Obras/Alhambra/dlaas06.jpg";
+import image7 from "../assets/Obras/Alhambra/dlaas07.jpg";
+import image8 from "../assets/Obras/Alhambra/dlaas08.jpg";
+import image9 from "../assets/Obras/Alhambra/dlaas09.jpg";
 import v00 from "../assets/Obras/Vogeland/vl01-1.jpg";
 import v01 from "../assets/Obras/Vogeland/vl01.jpg";
 import v02 from "../assets/Obras/Vogeland/vl02.jpg";
@@ -1158,38 +1161,56 @@ export const collections: Collection[] = [
       // -- IMÁGENES (fotografías) AÑADIDAS --
       {
         imagen: image1,
-        titulo: "Umbral del Patio Nazarí",
-        fecha: "2020",
+        titulo: "Herz Jesu Kirche I. Munich",
+        fecha: "2023",
         category: "fotografia",
       },
       {
         imagen: image2,
-        titulo: "Sombras en el Mirador",
-        fecha: "2020",
+        titulo: "Escalera de san Juan",
+        fecha: "2023",
         category: "fotografia",
       },
       {
         imagen: image3,
-        titulo: "Diálogo Oriental",
-        fecha: "2020",
+        titulo: "Herz Jesu Kirche II. Munich",
+        fecha: "2023",
         category: "fotografia",
       },
       {
         imagen: image4,
-        titulo: "Vestigios de Cenefas",
-        fecha: "2020",
+        titulo: "Escalera de san Juan (cartela)",
+        fecha: "2023",
         category: "fotografia",
       },
       {
         imagen: image5,
-        titulo: "Sonetos de Al-Andalus",
-        fecha: "2020",
+        titulo: "Convento de La Encarnación, Ávila. Aposento de san Juan de la Cruz",
+        fecha: "2023",
         category: "fotografia",
       },
       {
         imagen: image6,
-        titulo: "Alfombras de Luz",
-        fecha: "2020",
+        titulo: "Bocetos I",
+        fecha: "2023",
+        category: "fotografia",
+      },
+      {
+        imagen: image7,
+        titulo: "Bocetos II (poema “Noche oscura”)",
+        fecha: "2023",
+        category: "fotografia",
+      },
+      {
+        imagen: image8,
+        titulo: "Bocetos III",
+        fecha: "2023",
+        category: "fotografia",
+      },
+      {
+        imagen: image9,
+        titulo: "Bocetos IV",
+        fecha: "2023",
         category: "fotografia",
       },
    

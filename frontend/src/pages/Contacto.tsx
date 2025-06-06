@@ -16,7 +16,7 @@ const Contacto: React.FC = () => {
       <Text mb={4}>
         <strong>Método preferido:</strong> Le animamos a que se ponga en contacto
         con nosotros a través del correo electrónico{" "}
-        <strong>gestionartech+support@gmail.com</strong>. Nuestro equipo de
+        <strong>naniboronat@gmail.com</strong>. Nuestro equipo de
         atención al cliente responderá rápidamente a sus mensajes y le
         proporcionará la asistencia que necesite.
       </Text>

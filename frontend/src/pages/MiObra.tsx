@@ -55,6 +55,7 @@ const HorizontalSlider: React.FC<{
       whiteSpace="nowrap"
       flexWrap="nowrap"
       overflowX="auto"
+      maxW="100%"
       cursor={isDragging ? "grabbing" : "grab"}
       css={{
         "&::-webkit-scrollbar": { display: "none" },
@@ -115,7 +116,7 @@ const MiObra: React.FC = () => {
           top={{ base: "0", md: "0" }}
           
           left={{ base: "0", lg: "0" }}
-          h={{ base: "4rem", lg: "100%" }}
+          h={{ base: "5rem", lg: "100%" }}
           w={{ base: "100%", lg: "7rem" }}
           bg="brand.primary"
           display="flex"
@@ -234,7 +235,7 @@ const MiObra: React.FC = () => {
       </Box>
 
       {/* Galería separada por colección */}
-      <Box pl={{ base: "1rem", lg: "3rem" }} py="3rem">
+      <Box pl={{ base: "1rem", lg: "3rem" }} pr={{ base: "1rem", lg: "3rem" }} py="3rem" maxW="100%" overflow="hidden">
         {coleccionesFiltradas.map((collection) => {
           let obras = collection.obras;
           // Si es "centinelas", barajamos las obras

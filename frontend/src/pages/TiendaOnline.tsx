@@ -28,7 +28,7 @@ const TiendaOnline: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('https://nani-boronat-api.vercel.app/api/products');
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/products`);
         console.log('Productos devueltos:', response.data);
         setProducts(response.data);
       } catch (error) {
@@ -55,7 +55,7 @@ const TiendaOnline: React.FC = () => {
         position="fixed"
         top={{ base: '0rem', md: '0' }}
         left={{ base: '0', lg: '0' }}
-        h={{ base: '4rem', lg: '100%' }}
+        h={{ base: '5rem', lg: '100%' }}
         w={{ base: '100%', lg: '7rem' }}
         bg="brand.accent1"
         display="flex"
